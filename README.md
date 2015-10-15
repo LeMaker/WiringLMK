@@ -1,27 +1,29 @@
 # wiringBP README
 
-This is a modified WiringPi for Banana Pro/Pi. We call it WiringBP.
+This is a modified WiringPi for LeMaker Guitar and Banana Pro. We call it WiringLMK.
 It is based on the original [WiringPi for Raspberry Pi created by Drogon](http://wiringpi.com/).
 The modification is done by [LeMaker](http://lemaker.org). The WiringBP API usage are the same to the original wiringPi.
-You can donwload the WiringBP from:
-https://github.com/LeMaker/WiringBP.git.
+You can donwload the WiringLMK from:
+https://github.com/LeMaker/WiringLMK.git.
 
 ## Download
-### For Banana Pro
-    git clone https://github.com/LeMaker/WiringBP.git -b bananapro
-### For Banana Pi
-    git clone https://github.com/LeMaker/WiringBP.git -b bananapi
+    git clone https://github.com/LeMaker/WiringLMK.git 
+
 ## Installation
-    cd WiringBP
+    cd WiringLMK
     chmod +x ./build
     sudo ./build
     
 ## Examples
-You can go to LeMaker wiki to see the basic examples: http://wiki.lemaker.org/WiringPi
+To check the pins definitions of LeMaker Guitar, visit: 
+
+To check the pins definitions of Banana Pro, visit: 
+
+You can go to LeMaker wiki to see the basic examples: http://wiki.lemaker.org/WiringLMK
 
 You can also use the examples and instructions provided by http://wiringpi.com/
 
-And the source directory examples also has many demo.
+You will find more demos under the ./examples directory.
 
 Thanks!
 
