@@ -175,33 +175,33 @@ int wiringPiCodes = FALSE ;
 static int s500_physToGpio [64] =
 {
    -1,           // 0
-   -1,     -1,   //1,           2
-   131,    -1,   //3(SDA2),      4
-   130,    -1,   //5(SCK2),      6
-   50,     91,   //7(B18),       8(UART0_TX)
-   -1,     90,   //9,           10(UART0_RX)
-   64,     40,   //11(C0),      12(B8-PWM)
-   65,    -1,    //13(C1),       14
-   68,     25,   //15(C4),      16(A25)
-   -1,     70,   //17,          18(C6)
+   -1,     -1,   //1,                  2
+   131,    -1,   //3(SDA2),        4
+   130,    -1,   //5(SCK2),        6
+   50,     91,   //7(B18),          8(UART0_TX)
+   -1,     90,   //9,                 10(UART0_RX)
+   64,     40,   //11(C0),          12(B8-PWM)
+   65,    -1,    //13(C1),         14
+   68,     25,   //15(C4),         16(A25)
+   -1,     70,   //17,              18(C6)
    89,     -1,   //19(MOSI),     20
    88,     69,   //21(MISO),    22(C5)
    86,     87,   //23(SCLK),    24(SS)
-   -1,     51,   //25,          26(GPIOB19)
+   -1,     51,   //25,             26(GPIOB19)
    48,     46,   //27(B16),     28(B14)
    47,     -1,   //29(B15),     30
    42,     45,   //31(B10),     32(B13)      
    32,     -1,   //33(B0),      34
    33,     28,   //35(B1),      36(A28)
    34,     31,   //37(B2),      38(A31)
-   -1,     27,   //39,          40(A27)
+   -1,     27,   //39,           40(A27)
    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, //41-> 55
    -1, -1, -1, -1, -1, -1, -1, -1 // 56-> 63
 } ;
 
 static int s500_pinToGpio [64] =
 {
-  64, 50, 65, 68, 25, 41, 69, 47, 	//From the Original Wiki-HARDWARE GPIO MAP: 0-7
+  64, 40, 65, 68, 25, 70, 69, 50, 	//From the Original Wiki-HARDWARE GPIO MAP: 0-7
   131, 130,   						// I2C  - SDA0, SCL0					wpi  8 -  9
   87, 51,							// SPI  - CE1, CE0						wpi 10 - 11
   89,88,86,							// SPI  - MOSI, MISO, SCLK				wpi 12 - 14 
@@ -223,7 +223,7 @@ static int s500_pinTobcm [64] =
 131,130, //map to BCM GPIO2,3
 50,47,   //map to BCM GPIO4,5
 42,51,   //map to BCM GPIO6,7
-51,88,   //map to BCM GPIO8,9
+87,88,   //map to BCM GPIO8,9
 89,86,   //map to BCM GPIO10,11
 45,32,   //map to BCM GPIO12,13
 91,90,   //map to BCM GPIO14,15
@@ -710,7 +710,7 @@ void s500_pwm_set_clk_source(int select)
 }
 
 /*
- clk_div 范围: 0~1023
+ clk_div 鑼冨洿: 0~1023
 */
 void s500_pwm_set_clk(int clk_div)
 {
@@ -1802,7 +1802,7 @@ static void s500_set_gpio_mode(int pin,int mode)
 			int index = pin - (bank << 5);
 			uint32_t *phyaddr = NULL;	
 
-			//LVDS信号需要先转为数字信号才能使用
+			//LVDS淇″彿闇�瑕佸厛杞负鏁板瓧淇″彿鎵嶈兘浣跨敤
 
 		if(gpio == 42 || gpio == 45 || gpio == 46|| gpio == 47 || gpio == 48 || gpio == 50 || gpio == 51)
                 {//lvds port must be set digital function.The default function is LVDS ODD PAD.
