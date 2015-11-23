@@ -370,7 +370,7 @@ static int *physToGpio ;
 
 static int *physToPin ;
 
-static int upDnConvert[3] = {7, 7, 5};
+static int upDnConvert[3] = {0, 2, 1};
 
 static int pinToGpio_BP [64] =
 {
@@ -1990,7 +1990,6 @@ void pinMode (int pin, int mode)
 {
 	int    fSel, shift, alt ;
 	struct wiringPiNodeStruct *node = wiringPiNodes ;
-	int origPin = pin ;
 
 	//add for S500
 	if(S500_REV == version )
@@ -2246,10 +2245,8 @@ void pullUpDnControl (int pin, int pud)
 		return;
 	}	
 	/*add for BananaPro by LeMaker team*/
-	else if(BP_REV == version)
+	else if(version == BP_REV)
 	{	
-			pud = upDnConvert[pud];
-		
 		if ((pin & PI_GPIO_MASK) == 0)		// On-Board Pin
 		  {
 			   if (wiringPiMode == WPI_MODE_PINS)
@@ -2268,7 +2265,7 @@ void pullUpDnControl (int pin, int pud)
 					return;
 				}
 
-				pud &= 3 ;
+				pud = upDnConvert[pud];
 				sunxi_pullUpDnControl(pin, pud);
 				return;
 		  }
