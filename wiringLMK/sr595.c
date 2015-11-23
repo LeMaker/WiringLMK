@@ -42,37 +42,41 @@
 
 static void myDigitalWrite (struct wiringPiNodeStruct *node, int pin, int value)
 {
-  unsigned int mask ;
-  int  dataPin, clockPin, latchPin ;
-  int  bit, bits, output ;
+    unsigned int mask ;
+    int  dataPin, clockPin, latchPin ;
+    int  bit, bits, output ;
 
-  pin     -= node->pinBase ;				// Normalise pin number
-  bits     = node->pinMax - node->pinBase + 1 ;		// ie. number of clock pulses
-  dataPin  = node->data0 ;
-  clockPin = node->data1 ;
-  latchPin = node->data2 ;
-  output   = node->data3 ;
+    pin     -= node->pinBase ;				// Normalise pin number
+    bits     = node->pinMax - node->pinBase + 1 ;		// ie. number of clock pulses
+    dataPin  = node->data0 ;
+    clockPin = node->data1 ;
+    latchPin = node->data2 ;
+    output   = node->data3 ;
 
-  mask = 1 << pin ;
+    mask = 1 << pin ;
 
-  if (value == LOW)
-    output &= (~mask) ;
-  else
-    output |=   mask ;
+    if (value == LOW)
+        output &= (~mask) ;
+    else
+        output |=   mask ;
 
-  node->data3 = output ;
+    node->data3 = output ;
 
-// A low -> high latch transition copies the latch to the output pins
+    // A low -> high latch transition copies the latch to the output pins
 
-  digitalWrite (latchPin, LOW) ; delayMicroseconds (1) ;
+    digitalWrite (latchPin, LOW) ;
+    delayMicroseconds (1) ;
     for (bit = bits - 1 ; bit >= 0 ; --bit)
     {
-      digitalWrite (dataPin, output & (1 << bit)) ;
+        digitalWrite (dataPin, output & (1 << bit)) ;
 
-      digitalWrite (clockPin, HIGH) ; delayMicroseconds (1) ;
-      digitalWrite (clockPin, LOW) ;  delayMicroseconds (1) ;
+        digitalWrite (clockPin, HIGH) ;
+        delayMicroseconds (1) ;
+        digitalWrite (clockPin, LOW) ;
+        delayMicroseconds (1) ;
     }
-  digitalWrite (latchPin, HIGH) ; delayMicroseconds (1) ;
+    digitalWrite (latchPin, HIGH) ;
+    delayMicroseconds (1) ;
 }
 
 
@@ -83,27 +87,27 @@ static void myDigitalWrite (struct wiringPiNodeStruct *node, int pin, int value)
  */
 
 int sr595Setup (const int pinBase, const int numPins,
-	const int dataPin, const int clockPin, const int latchPin) 
+                const int dataPin, const int clockPin, const int latchPin)
 {
-  struct wiringPiNodeStruct *node ;
+    struct wiringPiNodeStruct *node ;
 
-  node = wiringPiNewNode (pinBase, numPins) ;
+    node = wiringPiNewNode (pinBase, numPins) ;
 
-  node->data0           = dataPin ;
-  node->data1           = clockPin ;
-  node->data2           = latchPin ;
-  node->data3           = 0 ;		// Output register
-  node->digitalWrite    = myDigitalWrite ;
+    node->data0           = dataPin ;
+    node->data1           = clockPin ;
+    node->data2           = latchPin ;
+    node->data3           = 0 ;		// Output register
+    node->digitalWrite    = myDigitalWrite ;
 
-// Initialise the underlying hardware
+    // Initialise the underlying hardware
 
-  digitalWrite (dataPin,  LOW) ;
-  digitalWrite (clockPin, LOW) ;
-  digitalWrite (latchPin, HIGH) ;
+    digitalWrite (dataPin,  LOW) ;
+    digitalWrite (clockPin, LOW) ;
+    digitalWrite (latchPin, HIGH) ;
 
-  pinMode (dataPin,  OUTPUT) ;
-  pinMode (clockPin, OUTPUT) ;
-  pinMode (latchPin, OUTPUT) ;
+    pinMode (dataPin,  OUTPUT) ;
+    pinMode (clockPin, OUTPUT) ;
+    pinMode (latchPin, OUTPUT) ;
 
-  return 0 ;
+    return 0 ;
 }

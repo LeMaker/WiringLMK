@@ -27,7 +27,7 @@ extern "C" {
 #endif
 
 extern int sr595Setup (const int pinBase, const int numPins,
-	const int dataPin, const int clockPin, const int latchPin) ;
+                       const int dataPin, const int clockPin, const int latchPin) ;
 
 #ifdef __cplusplus
 }

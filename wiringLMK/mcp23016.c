@@ -39,27 +39,27 @@
 
 static void myPinMode (struct wiringPiNodeStruct *node, int pin, int mode)
 {
-  int mask, old, reg ;
+    int mask, old, reg ;
 
-  pin -= node->pinBase ;
+    pin -= node->pinBase ;
 
-  if (pin < 8)		// Bank A
-    reg  = MCP23016_IODIR0 ;
-  else
-  {
-    reg  = MCP23016_IODIR1 ;
-    pin &= 0x07 ;
-  }
+    if (pin < 8)		// Bank A
+        reg  = MCP23016_IODIR0 ;
+    else
+    {
+        reg  = MCP23016_IODIR1 ;
+        pin &= 0x07 ;
+    }
 
-  mask = 1 << pin ;
-  old  = wiringPiI2CReadReg8 (node->fd, reg) ;
+    mask = 1 << pin ;
+    old  = wiringPiI2CReadReg8 (node->fd, reg) ;
 
-  if (mode == OUTPUT)
-    old &= (~mask) ;
-  else
-    old |=   mask ;
+    if (mode == OUTPUT)
+        old &= (~mask) ;
+    else
+        old |=   mask ;
 
-  wiringPiI2CWriteReg8 (node->fd, reg, old) ;
+    wiringPiI2CWriteReg8 (node->fd, reg, old) ;
 }
 
 
@@ -70,36 +70,36 @@ static void myPinMode (struct wiringPiNodeStruct *node, int pin, int mode)
 
 static void myDigitalWrite (struct wiringPiNodeStruct *node, int pin, int value)
 {
-  int bit, old ;
+    int bit, old ;
 
-  pin -= node->pinBase ;	// Pin now 0-15
+    pin -= node->pinBase ;	// Pin now 0-15
 
-  bit = 1 << (pin & 7) ;
+    bit = 1 << (pin & 7) ;
 
-  if (pin < 8)			// Bank A
-  {
-    old = node->data2 ;
+    if (pin < 8)			// Bank A
+    {
+        old = node->data2 ;
 
-    if (value == LOW)
-      old &= (~bit) ;
-    else
-      old |=   bit ;
+        if (value == LOW)
+            old &= (~bit) ;
+        else
+            old |=   bit ;
 
-    wiringPiI2CWriteReg8 (node->fd, MCP23016_GP0, old) ;
-    node->data2 = old ;
-  }
-  else				// Bank B
-  {
-    old = node->data3 ;
+        wiringPiI2CWriteReg8 (node->fd, MCP23016_GP0, old) ;
+        node->data2 = old ;
+    }
+    else				// Bank B
+    {
+        old = node->data3 ;
 
-    if (value == LOW)
-      old &= (~bit) ;
-    else
-      old |=   bit ;
+        if (value == LOW)
+            old &= (~bit) ;
+        else
+            old |=   bit ;
 
-    wiringPiI2CWriteReg8 (node->fd, MCP23016_GP1, old) ;
-    node->data3 = old ;
-  }
+        wiringPiI2CWriteReg8 (node->fd, MCP23016_GP1, old) ;
+        node->data3 = old ;
+    }
 }
 
 
@@ -110,25 +110,25 @@ static void myDigitalWrite (struct wiringPiNodeStruct *node, int pin, int value)
 
 static int myDigitalRead (struct wiringPiNodeStruct *node, int pin)
 {
-  int mask, value, gpio ;
+    int mask, value, gpio ;
 
-  pin -= node->pinBase ;
+    pin -= node->pinBase ;
 
-  if (pin < 8)		// Bank A
-    gpio  = MCP23016_GP0 ;
-  else
-  {
-    gpio  = MCP23016_GP1 ;
-    pin  &= 0x07 ;
-  }
+    if (pin < 8)		// Bank A
+        gpio  = MCP23016_GP0 ;
+    else
+    {
+        gpio  = MCP23016_GP1 ;
+        pin  &= 0x07 ;
+    }
 
-  mask  = 1 << pin ;
-  value = wiringPiI2CReadReg8 (node->fd, gpio) ;
+    mask  = 1 << pin ;
+    value = wiringPiI2CReadReg8 (node->fd, gpio) ;
 
-  if ((value & mask) == 0)
-    return LOW ;
-  else 
-    return HIGH ;
+    if ((value & mask) == 0)
+        return LOW ;
+    else
+        return HIGH ;
 }
 
 
@@ -142,23 +142,23 @@ static int myDigitalRead (struct wiringPiNodeStruct *node, int pin)
 
 int mcp23016Setup (const int pinBase, const int i2cAddress)
 {
-  int fd ;
-  struct wiringPiNodeStruct *node ;
+    int fd ;
+    struct wiringPiNodeStruct *node ;
 
-  if ((fd = wiringPiI2CSetup (i2cAddress)) < 0)
-    return fd ;
+    if ((fd = wiringPiI2CSetup (i2cAddress)) < 0)
+        return fd ;
 
-  wiringPiI2CWriteReg8 (fd, MCP23016_IOCON0, IOCON_INIT) ;
-  wiringPiI2CWriteReg8 (fd, MCP23016_IOCON1, IOCON_INIT) ;
+    wiringPiI2CWriteReg8 (fd, MCP23016_IOCON0, IOCON_INIT) ;
+    wiringPiI2CWriteReg8 (fd, MCP23016_IOCON1, IOCON_INIT) ;
 
-  node = wiringPiNewNode (pinBase, 16) ;
+    node = wiringPiNewNode (pinBase, 16) ;
 
-  node->fd              = fd ;
-  node->pinMode         = myPinMode ;
-  node->digitalRead     = myDigitalRead ;
-  node->digitalWrite    = myDigitalWrite ;
-  node->data2           = wiringPiI2CReadReg8 (fd, MCP23016_OLAT0) ;
-  node->data3           = wiringPiI2CReadReg8 (fd, MCP23016_OLAT1) ;
+    node->fd              = fd ;
+    node->pinMode         = myPinMode ;
+    node->digitalRead     = myDigitalRead ;
+    node->digitalWrite    = myDigitalWrite ;
+    node->data2           = wiringPiI2CReadReg8 (fd, MCP23016_OLAT0) ;
+    node->data3           = wiringPiI2CReadReg8 (fd, MCP23016_OLAT1) ;
 
-  return 0 ;
+    return 0 ;
 }

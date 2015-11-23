@@ -31,29 +31,29 @@
 
 int main (void)
 {
-  int value ;
+    int value ;
 
-// Enable the on-goard GPIO
+    // Enable the on-goard GPIO
 
-  wiringPiSetup () ;
+    wiringPiSetup () ;
 
-// Add in the pcf8591 on the q2w board
+    // Add in the pcf8591 on the q2w board
 
-  pcf8591Setup (Q2W_ABASE, 0x48) ;
+    pcf8591Setup (Q2W_ABASE, 0x48) ;
 
-  printf ("Raspberry Pi - Quick2Wire Analog Test\n") ;
+    printf ("Raspberry Pi - Quick2Wire Analog Test\n") ;
 
-// Setup the LED
+    // Setup the LED
 
-  pinMode  (LED, PWM_OUTPUT) ;
-  pwmWrite (LED, 0) ;
+    pinMode  (LED, PWM_OUTPUT) ;
+    pwmWrite (LED, 0) ;
 
-  for (;;)
-  {
-    value = analogRead  (Q2W_ABASE + 0) ;
-    pwmWrite (LED, value * 4) ;
-    delay (10) ;
-  }
+    for (;;)
+    {
+        value = analogRead  (Q2W_ABASE + 0) ;
+        pwmWrite (LED, value * 4) ;
+        delay (10) ;
+    }
 
-  return 0 ;
+    return 0 ;
 }

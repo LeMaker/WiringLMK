@@ -44,15 +44,15 @@
 
 static void maxDetectLowHighWait (const int pin)
 {
-  unsigned int timeOut = millis () + 2000 ;
+    unsigned int timeOut = millis () + 2000 ;
 
-  while (digitalRead (pin) == HIGH)
-    if (millis () > timeOut)
-      return ;
+    while (digitalRead (pin) == HIGH)
+        if (millis () > timeOut)
+            return ;
 
-  while (digitalRead (pin) == LOW)
-    if (millis () > timeOut)
-      return ;
+    while (digitalRead (pin) == LOW)
+        if (millis () > timeOut)
+            return ;
 }
 
 
@@ -64,22 +64,22 @@ static void maxDetectLowHighWait (const int pin)
 
 static unsigned int maxDetectClockByte (const int pin)
 {
-  unsigned int byte = 0 ;
-  int bit ;
+    unsigned int byte = 0 ;
+    int bit ;
 
-  for (bit = 0 ; bit < 8 ; ++bit)
-  {
-    maxDetectLowHighWait (pin) ;
+    for (bit = 0 ; bit < 8 ; ++bit)
+    {
+        maxDetectLowHighWait (pin) ;
 
-// bit starting now - we need to time it.
+        // bit starting now - we need to time it.
 
-    delayMicroseconds (30) ;
-    byte <<= 1 ;
-    if (digitalRead (pin) == HIGH)	// It's a 1
-      byte |= 1 ;
-  }
+        delayMicroseconds (30) ;
+        byte <<= 1 ;
+        if (digitalRead (pin) == HIGH)	// It's a 1
+            byte |= 1 ;
+    }
 
-  return byte ;
+    return byte ;
 }
 
 
@@ -92,36 +92,38 @@ static unsigned int maxDetectClockByte (const int pin)
 
 int maxDetectRead (const int pin, unsigned char buffer [4])
 {
-  int i ;
-  unsigned int checksum ;
-  unsigned char localBuf [5] ;
+    int i ;
+    unsigned int checksum ;
+    unsigned char localBuf [5] ;
 
-// Wake up the RHT03 by pulling the data line low, then high
-//	Low for 10mS, high for 40uS.
+    // Wake up the RHT03 by pulling the data line low, then high
+    //	Low for 10mS, high for 40uS.
 
-  pinMode      (pin, OUTPUT) ;
-  digitalWrite (pin, 0) ; delay             (10) ;
-  digitalWrite (pin, 1) ; delayMicroseconds (40) ;
-  pinMode      (pin, INPUT) ;
+    pinMode      (pin, OUTPUT) ;
+    digitalWrite (pin, 0) ;
+    delay             (10) ;
+    digitalWrite (pin, 1) ;
+    delayMicroseconds (40) ;
+    pinMode      (pin, INPUT) ;
 
-// Now wait for sensor to pull pin low
+    // Now wait for sensor to pull pin low
 
-  maxDetectLowHighWait (pin) ;
+    maxDetectLowHighWait (pin) ;
 
-// and read in 5 bytes (40 bits)
+    // and read in 5 bytes (40 bits)
 
-  for (i = 0 ; i < 5 ; ++i)
-    localBuf [i] = maxDetectClockByte (pin) ;
+    for (i = 0 ; i < 5 ; ++i)
+        localBuf [i] = maxDetectClockByte (pin) ;
 
-  checksum = 0 ;
-  for (i = 0 ; i < 4 ; ++i)
-  {
-    buffer [i] = localBuf [i] ;
-    checksum += localBuf [i] ;
-  }
-  checksum &= 0xFF ;
+    checksum = 0 ;
+    for (i = 0 ; i < 4 ; ++i)
+    {
+        buffer [i] = localBuf [i] ;
+        checksum += localBuf [i] ;
+    }
+    checksum &= 0xFF ;
 
-  return checksum == localBuf [4] ;
+    return checksum == localBuf [4] ;
 }
 
 
@@ -133,33 +135,33 @@ int maxDetectRead (const int pin, unsigned char buffer [4])
 
 int readRHT03 (const int pin, int *temp, int *rh)
 {
-  static unsigned int nextTime   = 0 ;
-  static          int lastTemp   = 0 ;
-  static          int lastRh     = 0 ;
-  static          int lastResult = TRUE ;
+    static unsigned int nextTime   = 0 ;
+    static          int lastTemp   = 0 ;
+    static          int lastRh     = 0 ;
+    static          int lastResult = TRUE ;
 
-  unsigned char buffer [4] ;
+    unsigned char buffer [4] ;
 
-// Don't read more than once a second
+    // Don't read more than once a second
 
-  if (millis () < nextTime)
-  {
-    *temp = lastTemp ;
-    *rh   = lastRh ;
-    return lastResult ;
-  }
-  
-  lastResult = maxDetectRead (pin, buffer) ;
+    if (millis () < nextTime)
+    {
+        *temp = lastTemp ;
+        *rh   = lastRh ;
+        return lastResult ;
+    }
 
-  if (lastResult)
-  {
-    *temp      = lastTemp   = (buffer [2] * 256 + buffer [3]) ;
-    *rh        = lastRh     = (buffer [0] * 256 + buffer [1]) ;
-    nextTime   = millis () + 2000 ;
-    return TRUE ;
-  }
-  else
-  {
-    return FALSE ;
-  }
+    lastResult = maxDetectRead (pin, buffer) ;
+
+    if (lastResult)
+    {
+        *temp      = lastTemp   = (buffer [2] * 256 + buffer [3]) ;
+        *rh        = lastRh     = (buffer [0] * 256 + buffer [1]) ;
+        nextTime   = millis () + 2000 ;
+        return TRUE ;
+    }
+    else
+    {
+        return FALSE ;
+    }
 }

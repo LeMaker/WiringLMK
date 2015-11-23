@@ -37,13 +37,13 @@
 
 // The PWM Frequency is derived from the "pulse time" below. Essentially,
 //	the frequency is a function of the range and this pulse time.
-//	The total period will be range * pulse time in µS, so a pulse time
-//	of 100 and a range of 100 gives a period of 100 * 100 = 10,000 µS
+//	The total period will be range * pulse time in μS, so a pulse time
+//	of 100 and a range of 100 gives a period of 100 * 100 = 10,000 μS
 //	which is a frequency of 100Hz.
 //
 //	It's possible to get a higher frequency by lowering the pulse time,
 //	however CPU uage will skyrocket as wiringPi uses a hard-loop to time
-//	periods under 100µS - this is because the Linux timer calls are just
+//	periods under 100μS - this is because the Linux timer calls are just
 //	accurate at all, and have an overhead.
 //
 //	Another way to increase the frequency is to reduce the range - however
@@ -65,34 +65,34 @@ int newPin = -1 ;
 
 static PI_THREAD (softPwmThread)
 {
-  int pin, mark, space ;
-  struct sched_param param ;
+    int pin, mark, space ;
+    struct sched_param param ;
 
-  param.sched_priority = sched_get_priority_max (SCHED_RR) ;
-  pthread_setschedparam (pthread_self (), SCHED_RR, &param) ;
+    param.sched_priority = sched_get_priority_max (SCHED_RR) ;
+    pthread_setschedparam (pthread_self (), SCHED_RR, &param) ;
 
-  pin    = newPin ;
-  newPin = -1 ;
+    pin    = newPin ;
+    newPin = -1 ;
 
-  piHiPri (90) ;
+    piHiPri (90) ;
 
-  for (;;)
-  {
-    mark  = marks [pin] ;
-    space = range [pin] - mark ;
+    for (;;)
+    {
+        mark  = marks [pin] ;
+        space = range [pin] - mark ;
 
-    if (mark != 0)
-      digitalWrite (pin, HIGH) ;
-    		delayMicroseconds (mark * 100) ;
-		delay(mark * 10);
+        if (mark != 0)
+            digitalWrite (pin, HIGH) ;
+        delayMicroseconds (mark * 100) ;
+        delay(mark * 10);
 
-    if (space != 0)
-      digitalWrite (pin, LOW) ;
-    		delayMicroseconds (space * 100) ;
-		delay(mark * 10);
-  }
+        if (space != 0)
+            digitalWrite (pin, LOW) ;
+        delayMicroseconds (space * 100) ;
+        delay(mark * 10);
+    }
 
-  return NULL ;
+    return NULL ;
 }
 
 
@@ -104,14 +104,14 @@ static PI_THREAD (softPwmThread)
 
 void softPwmWrite (int pin, int value)
 {
-  pin &= (MAX_PINS - 1) ;
+    pin &= (MAX_PINS - 1) ;
 
-  /**/ if (value < 0)
-    value = 0 ;
-  else if (value > range [pin])
-    value = range [pin] ;
+    /**/ if (value < 0)
+        value = 0 ;
+    else if (value > range [pin])
+        value = range [pin] ;
 
-  marks [pin] = value ;
+    marks [pin] = value ;
 }
 
 
@@ -123,30 +123,30 @@ void softPwmWrite (int pin, int value)
 
 int softPwmCreate (int pin, int initialValue, int pwmRange)
 {
-  int res ;
-  pthread_t myThread ;
+    int res ;
+    pthread_t myThread ;
 
-  if (range [pin] != 0)	// Already running on this pin
-    return -1 ;
+    if (range [pin] != 0)	// Already running on this pin
+        return -1 ;
 
-  if (range <= 0)
-    return -1 ;
+    if (range <= 0)
+        return -1 ;
 
-  pinMode      (pin, OUTPUT) ;
-  digitalWrite (pin, LOW) ;
+    pinMode      (pin, OUTPUT) ;
+    digitalWrite (pin, LOW) ;
 
-  marks [pin] = initialValue ;
-  range [pin] = pwmRange ;
+    marks [pin] = initialValue ;
+    range [pin] = pwmRange ;
 
-  newPin = pin ;
-  res    = pthread_create (&myThread, NULL, softPwmThread, NULL) ;
+    newPin = pin ;
+    res    = pthread_create (&myThread, NULL, softPwmThread, NULL) ;
 
-  while (newPin != -1)
-    delay (1) ;
+    while (newPin != -1)
+        delay (1) ;
 
-  threads [pin] = myThread ;
+    threads [pin] = myThread ;
 
-  return res ;
+    return res ;
 }
 
 
@@ -158,11 +158,11 @@ int softPwmCreate (int pin, int initialValue, int pwmRange)
 
 void softPwmStop (int pin)
 {
-  if (range [pin] != 0)
-  {
-    pthread_cancel (threads [pin]) ;
-    pthread_join   (threads [pin], NULL) ;
-    range [pin] = 0 ;
-    digitalWrite (pin, LOW) ;
-  }
+    if (range [pin] != 0)
+    {
+        pthread_cancel (threads [pin]) ;
+        pthread_join   (threads [pin], NULL) ;
+        range [pin] = 0 ;
+        digitalWrite (pin, LOW) ;
+    }
 }

@@ -49,13 +49,13 @@
 
 static void writeByte (uint8_t reg, uint8_t data)
 {
-  uint8_t spiData [4] ;
+    uint8_t spiData [4] ;
 
-  spiData [0] = CMD_WRITE ;
-  spiData [1] = reg ;
-  spiData [2] = data ;
+    spiData [0] = CMD_WRITE ;
+    spiData [1] = reg ;
+    spiData [2] = data ;
 
-  wiringPiSPIDataRW (PIFACE_DEVNO, spiData, 3) ;
+    wiringPiSPIDataRW (PIFACE_DEVNO, spiData, 3) ;
 }
 
 /*
@@ -66,14 +66,14 @@ static void writeByte (uint8_t reg, uint8_t data)
 
 static uint8_t readByte (uint8_t reg)
 {
-  uint8_t spiData [4] ;
+    uint8_t spiData [4] ;
 
-  spiData [0] = CMD_READ ;
-  spiData [1] = reg ;
+    spiData [0] = CMD_READ ;
+    spiData [1] = reg ;
 
-  wiringPiSPIDataRW (PIFACE_DEVNO, spiData, 3) ;
+    wiringPiSPIDataRW (PIFACE_DEVNO, spiData, 3) ;
 
-  return spiData [2] ;
+    return spiData [2] ;
 }
 
 
@@ -85,18 +85,18 @@ static uint8_t readByte (uint8_t reg)
 
 void myDigitalWrite (struct wiringPiNodeStruct *node, int pin, int value)
 {
-  uint8_t mask, old ;
+    uint8_t mask, old ;
 
-  pin -= node->pinBase ;
-  mask = 1 << pin ;
-  old  = readByte (MCP23x17_GPIOA) ;
+    pin -= node->pinBase ;
+    mask = 1 << pin ;
+    old  = readByte (MCP23x17_GPIOA) ;
 
-  if (value == 0)
-    old &= (~mask) ;
-  else
-    old |=   mask ;
+    if (value == 0)
+        old &= (~mask) ;
+    else
+        old |=   mask ;
 
-  writeByte (MCP23x17_GPIOA, old) ;
+    writeByte (MCP23x17_GPIOA, old) ;
 }
 
 
@@ -108,19 +108,19 @@ void myDigitalWrite (struct wiringPiNodeStruct *node, int pin, int value)
 
 int myDigitalRead (struct wiringPiNodeStruct *node, int pin)
 {
-  uint8_t mask, reg ;
+    uint8_t mask, reg ;
 
-  mask = 1 << ((pin - node->pinBase) & 7) ;
+    mask = 1 << ((pin - node->pinBase) & 7) ;
 
-  if (pin < 8)
-    reg = MCP23x17_GPIOB ;	// Input regsiter
-  else
-    reg = MCP23x17_OLATA ;	// Output latch regsiter
+    if (pin < 8)
+        reg = MCP23x17_GPIOB ;	// Input regsiter
+    else
+        reg = MCP23x17_OLATA ;	// Output latch regsiter
 
-  if ((readByte (reg) & mask) != 0)
-    return HIGH ;
-  else
-    return LOW ;
+    if ((readByte (reg) & mask) != 0)
+        return HIGH ;
+    else
+        return LOW ;
 }
 
 
@@ -132,17 +132,17 @@ int myDigitalRead (struct wiringPiNodeStruct *node, int pin)
 
 void myPullUpDnControl (struct wiringPiNodeStruct *node, int pin, int pud)
 {
-  uint8_t mask, old ;
+    uint8_t mask, old ;
 
-  mask = 1 << (pin - node->pinBase) ;
-  old  = readByte (MCP23x17_GPPUB) ;
+    mask = 1 << (pin - node->pinBase) ;
+    old  = readByte (MCP23x17_GPPUB) ;
 
-  if (pud == 0)
-    old &= (~mask) ;
-  else
-    old |=   mask ;
+    if (pud == 0)
+        old &= (~mask) ;
+    else
+        old |=   mask ;
 
-  writeByte (MCP23x17_GPPUB, old) ;
+    writeByte (MCP23x17_GPPUB, old) ;
 }
 
 
@@ -157,22 +157,22 @@ void myPullUpDnControl (struct wiringPiNodeStruct *node, int pin, int pud)
 
 int piFaceSetup (const int pinBase)
 {
-  int    x ;
-  struct wiringPiNodeStruct *node ;
+    int    x ;
+    struct wiringPiNodeStruct *node ;
 
-  if ((x = wiringPiSPISetup (PIFACE_DEVNO, PIFACE_SPEED)) < 0)
-    return x ;
+    if ((x = wiringPiSPISetup (PIFACE_DEVNO, PIFACE_SPEED)) < 0)
+        return x ;
 
-// Setup the MCP23S17
+    // Setup the MCP23S17
 
-  writeByte (MCP23x17_IOCON,  IOCON_INIT) ;
-  writeByte (MCP23x17_IODIRA, 0x00) ;		// Port A -> Outputs
-  writeByte (MCP23x17_IODIRB, 0xFF) ;		// Port B -> Inputs
+    writeByte (MCP23x17_IOCON,  IOCON_INIT) ;
+    writeByte (MCP23x17_IODIRA, 0x00) ;		// Port A -> Outputs
+    writeByte (MCP23x17_IODIRB, 0xFF) ;		// Port B -> Inputs
 
-  node = wiringPiNewNode (pinBase, 16) ;
-  node->digitalRead     = myDigitalRead ;
-  node->digitalWrite    = myDigitalWrite ;
-  node->pullUpDnControl = myPullUpDnControl ;
+    node = wiringPiNewNode (pinBase, 16) ;
+    node->digitalRead     = myDigitalRead ;
+    node->digitalWrite    = myDigitalWrite ;
+    node->pullUpDnControl = myPullUpDnControl ;
 
-  return 0 ;
+    return 0 ;
 }

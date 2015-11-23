@@ -32,9 +32,9 @@
 
 static int pinMap [] =
 {
-  0, 1, 2, 3,		// Pi Native
-  GERT_BASE + 2, GERT_BASE + 3, GERT_BASE + 4, GERT_BASE + 5,
-  GERT_BASE + 6, GERT_BASE + 7, GERT_BASE + 8, GERT_BASE + 9,
+    0, 1, 2, 3,		// Pi Native
+    GERT_BASE + 2, GERT_BASE + 3, GERT_BASE + 4, GERT_BASE + 5,
+    GERT_BASE + 6, GERT_BASE + 7, GERT_BASE + 8, GERT_BASE + 9,
 } ;
 
 // Simple sequencer data
@@ -43,83 +43,83 @@ static int pinMap [] =
 
 int data [] =
 {
-               0, 1, 1,
-               1, 1, 1,
-   0, 0, 0,    2, 1, 1,
-   1, 0, 0,    3, 1, 1,
-   2, 0, 0,    4, 1, 1,
-   3, 0, 0,    5, 1, 1,
-   4, 0, 0,    6, 1, 1,
-   5, 0, 0,    7, 1, 1,
-   6, 0, 0,    8, 1, 1,
-   7, 0, 0,    9, 1, 1,
-   8, 0, 0,   10, 1, 1,
-   9, 0, 0,   11, 1, 1,
-  10, 0, 1,
-  11, 0, 1,
+    0, 1, 1,
+    1, 1, 1,
+    0, 0, 0,    2, 1, 1,
+    1, 0, 0,    3, 1, 1,
+    2, 0, 0,    4, 1, 1,
+    3, 0, 0,    5, 1, 1,
+    4, 0, 0,    6, 1, 1,
+    5, 0, 0,    7, 1, 1,
+    6, 0, 0,    8, 1, 1,
+    7, 0, 0,    9, 1, 1,
+    8, 0, 0,   10, 1, 1,
+    9, 0, 0,   11, 1, 1,
+    10, 0, 1,
+    11, 0, 1,
 
-  0, 0, 1,	// Extra delay
+    0, 0, 1,	// Extra delay
 
-// Back again
+    // Back again
 
-              11, 1, 1,
-              10, 1, 1,
-  11, 0, 0,    9, 1, 1,
-  10, 0, 0,    8, 1, 1,
-   9, 0, 0,    7, 1, 1,
-   8, 0, 0,    6, 1, 1,
-   7, 0, 0,    5, 1, 1,
-   6, 0, 0,    4, 1, 1,
-   5, 0, 0,    3, 1, 1,
-   4, 0, 0,    2, 1, 1,
-   3, 0, 0,    1, 1, 1,
-   2, 0, 0,    0, 1, 1,
-   1, 0, 1,
-   0, 0, 1,
+    11, 1, 1,
+    10, 1, 1,
+    11, 0, 0,    9, 1, 1,
+    10, 0, 0,    8, 1, 1,
+    9, 0, 0,    7, 1, 1,
+    8, 0, 0,    6, 1, 1,
+    7, 0, 0,    5, 1, 1,
+    6, 0, 0,    4, 1, 1,
+    5, 0, 0,    3, 1, 1,
+    4, 0, 0,    2, 1, 1,
+    3, 0, 0,    1, 1, 1,
+    2, 0, 0,    0, 1, 1,
+    1, 0, 1,
+    0, 0, 1,
 
-   0, 0, 1,	// Extra delay
+    0, 0, 1,	// Extra delay
 
-   0, 9, 0,	// End marker
+    0, 9, 0,	// End marker
 
 } ;
 
 
 int main (void)
 {
-  int pin ;
-  int dataPtr ;
-  int l, s, d ;
+    int pin ;
+    int dataPtr ;
+    int l, s, d ;
 
-  printf ("Raspberry Pi - 12-LED Sequence\n") ;
-  printf ("==============================\n") ;
-  printf ("\n") ;
-  printf ("Connect LEDs up to the first 4 Pi pins and 8 pins on the ATmega\n") ;
-  printf ("    from PD2 through PB1 in that order,\n") ;
-  printf ("  then sit back and watch the show!\n") ;
+    printf ("Raspberry Pi - 12-LED Sequence\n") ;
+    printf ("==============================\n") ;
+    printf ("\n") ;
+    printf ("Connect LEDs up to the first 4 Pi pins and 8 pins on the ATmega\n") ;
+    printf ("    from PD2 through PB1 in that order,\n") ;
+    printf ("  then sit back and watch the show!\n") ;
 
-  wiringPiSetup  () ;
-  drcSetupSerial (GERT_BASE, 20, "/dev/ttyAMA0", 115200) ;
+    wiringPiSetup  () ;
+    drcSetupSerial (GERT_BASE, 20, "/dev/ttyAMA0", 115200) ;
 
-  for (pin = 0 ; pin < 12 ; ++pin)
-    pinMode (pinMap [pin], OUTPUT) ;
+    for (pin = 0 ; pin < 12 ; ++pin)
+        pinMode (pinMap [pin], OUTPUT) ;
 
-  dataPtr = 0 ;
+    dataPtr = 0 ;
 
-  for (;;)
-  {
-    l = data [dataPtr++] ;	// LED
-    s = data [dataPtr++] ;	// State
-    d = data [dataPtr++] ;	// Duration (10ths)
-
-    if (s == 9)			// 9 -> End Marker
+    for (;;)
     {
-      dataPtr = 0 ;
-      continue ;
+        l = data [dataPtr++] ;	// LED
+        s = data [dataPtr++] ;	// State
+        d = data [dataPtr++] ;	// Duration (10ths)
+
+        if (s == 9)			// 9 -> End Marker
+        {
+            dataPtr = 0 ;
+            continue ;
+        }
+
+        digitalWrite (pinMap [l], s) ;
+        delay        (d * analogRead (GERT_BASE) / 4) ;
     }
 
-    digitalWrite (pinMap [l], s) ;
-    delay        (d * analogRead (GERT_BASE) / 4) ;
-  }
-
-  return 0 ;
+    return 0 ;
 }

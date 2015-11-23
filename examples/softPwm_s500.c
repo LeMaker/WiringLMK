@@ -1,6 +1,6 @@
 /*
  * softPwm_s500.c:
- *	Test of the software PWM driver. 
+ *	Test of the software PWM driver.
  *	For S500
  *
  * Copyright (c) Lemaker
@@ -39,18 +39,18 @@ int values [NUM_LEDS] = { 0, 25, 50, 75, 100, 75, 50, 25 } ;
 
 int main ()
 {
-	int i, j ;
-	char buf [80] ;
+    int i, j ;
+    char buf [80] ;
 
-	wiringPiSetup ()  ;
+    wiringPiSetup ()  ;
 
-	softPwmCreate (3, 0, RANGE) ;//phy
-	printf ("GPIOE3, %3d, %3d\n", 0, RANGE) ;
+    softPwmCreate (3, 0, RANGE) ;//phy
+    printf ("GPIOE3, %3d, %3d\n", 0, RANGE) ;
 
-	softPwmWrite (3, 50) ;
+    softPwmWrite (3, 50) ;
 
-	while(1)
-	{
-		
-	}
+    while(1)
+    {
+
+    }
 }

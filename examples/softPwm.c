@@ -39,51 +39,51 @@ int values [NUM_LEDS] = { 0, 25, 50, 75, 100, 75, 50, 25 } ;
 
 int main ()
 {
-  int i, j ;
-  char buf [80] ;
+    int i, j ;
+    char buf [80] ;
 
-  wiringPiSetup ()  ;
+    wiringPiSetup ()  ;
 
-  for (i = 0 ; i < NUM_LEDS ; ++i)
-  {
-    softPwmCreate (ledMap [i], 0, RANGE) ;
-    printf ("%3d, %3d, %3d\n", i, ledMap [i], values [i]) ;
-  }
-
-  fgets (buf, 80, stdin) ;
-
-// Bring all up one by one:
-
-  for (i = 0 ; i < NUM_LEDS ; ++i)
-    for (j = 0 ; j <= 100 ; ++j)
+    for (i = 0 ; i < NUM_LEDS ; ++i)
     {
-      softPwmWrite (ledMap [i], j) ;
-      delay (10) ;
+        softPwmCreate (ledMap [i], 0, RANGE) ;
+        printf ("%3d, %3d, %3d\n", i, ledMap [i], values [i]) ;
     }
 
-  fgets (buf, 80, stdin) ;
+    fgets (buf, 80, stdin) ;
 
-// All Down
+    // Bring all up one by one:
 
-  for (i = 100 ; i > 0 ; --i)
-  {
-    for (j = 0 ; j < NUM_LEDS ; ++j)
-      softPwmWrite (ledMap [j], i) ;
-    delay (10) ;
-  }
-
-  fgets (buf, 80, stdin) ;
-
-  for (;;)
-  {
     for (i = 0 ; i < NUM_LEDS ; ++i)
-      softPwmWrite (ledMap [i], values [i]) ;
+        for (j = 0 ; j <= 100 ; ++j)
+        {
+            softPwmWrite (ledMap [i], j) ;
+            delay (10) ;
+        }
 
-    delay (50) ;
+    fgets (buf, 80, stdin) ;
 
-    i = values [0] ;
-    for (j = 0 ; j < NUM_LEDS - 1 ; ++j)
-      values [j] = values [j + 1] ;
-    values [NUM_LEDS - 1] = i ;
-  }
+    // All Down
+
+    for (i = 100 ; i > 0 ; --i)
+    {
+        for (j = 0 ; j < NUM_LEDS ; ++j)
+            softPwmWrite (ledMap [j], i) ;
+        delay (10) ;
+    }
+
+    fgets (buf, 80, stdin) ;
+
+    for (;;)
+    {
+        for (i = 0 ; i < NUM_LEDS ; ++i)
+            softPwmWrite (ledMap [i], values [i]) ;
+
+        delay (50) ;
+
+        i = values [0] ;
+        for (j = 0 ; j < NUM_LEDS - 1 ; ++j)
+            values [j] = values [j + 1] ;
+        values [NUM_LEDS - 1] = i ;
+    }
 }

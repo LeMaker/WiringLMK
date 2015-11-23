@@ -35,22 +35,22 @@
 
 static void myAnalogWrite (struct wiringPiNodeStruct *node, int pin, int value)
 {
-  unsigned char spiData [2] ;
-  unsigned char chanBits, dataBits ;
-  int chan = pin - node->pinBase ;
+    unsigned char spiData [2] ;
+    unsigned char chanBits, dataBits ;
+    int chan = pin - node->pinBase ;
 
-  if (chan == 0)
-    chanBits = 0b01000000 ;
-  else
-    chanBits = 0b01010000 ;
+    if (chan == 0)
+        chanBits = 0b01000000 ;
+    else
+        chanBits = 0b01010000 ;
 
-  chanBits |= ((value >> 12) & 0x0F) ;
-  dataBits  = ((value      ) & 0xFF) ;
+    chanBits |= ((value >> 12) & 0x0F) ;
+    dataBits  = ((value      ) & 0xFF) ;
 
-  spiData [0] = chanBits ;
-  spiData [1] = dataBits ;
+    spiData [0] = chanBits ;
+    spiData [1] = dataBits ;
 
-  wiringPiSPIDataRW (node->fd, spiData, 2) ;
+    wiringPiSPIDataRW (node->fd, spiData, 2) ;
 }
 
 /*
@@ -62,23 +62,23 @@ static void myAnalogWrite (struct wiringPiNodeStruct *node, int pin, int value)
 
 int max5322Setup (const int pinBase, int spiChannel)
 {
-  struct wiringPiNodeStruct *node ;
-  unsigned char spiData [2] ;
+    struct wiringPiNodeStruct *node ;
+    unsigned char spiData [2] ;
 
-  if (wiringPiSPISetup (spiChannel, 8000000) < 0)	// 10MHz Max
-    return -1 ;
+    if (wiringPiSPISetup (spiChannel, 8000000) < 0)	// 10MHz Max
+        return -1 ;
 
-  node = wiringPiNewNode (pinBase, 2) ;
+    node = wiringPiNewNode (pinBase, 2) ;
 
-  node->fd          = spiChannel ;
-  node->analogWrite = myAnalogWrite ;
+    node->fd          = spiChannel ;
+    node->analogWrite = myAnalogWrite ;
 
-// Enable both DACs
+    // Enable both DACs
 
-  spiData [0] = 0b11100000 ;
-  spiData [1] = 0 ;
-  
-  wiringPiSPIDataRW (node->fd, spiData, 2) ;
+    spiData [0] = 0b11100000 ;
+    spiData [1] = 0 ;
 
-  return 0 ;
+    wiringPiSPIDataRW (node->fd, spiData, 2) ;
+
+    return 0 ;
 }

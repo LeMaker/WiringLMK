@@ -46,14 +46,14 @@
 
 static void myPinMode (struct wiringPiNodeStruct *node, int pin, int mode)
 {
-  /**/ if (mode == OUTPUT)
-    serialPutchar (node->fd, 'o') ;       // Input
-  else if (mode == PWM_OUTPUT)
-    serialPutchar (node->fd, 'p') ;       // PWM
-  else
-    serialPutchar (node->fd, 'i') ;       // Default to input
+    /**/ if (mode == OUTPUT)
+        serialPutchar (node->fd, 'o') ;       // Input
+    else if (mode == PWM_OUTPUT)
+        serialPutchar (node->fd, 'p') ;       // PWM
+    else
+        serialPutchar (node->fd, 'i') ;       // Default to input
 
-  serialPutchar (node->fd, pin - node->pinBase) ;
+    serialPutchar (node->fd, pin - node->pinBase) ;
 }
 
 
@@ -66,21 +66,21 @@ static void myPinMode (struct wiringPiNodeStruct *node, int pin, int mode)
 static void myPullUpDnControl (struct wiringPiNodeStruct *node, int pin, int mode)
 {
 
-// Force pin into input mode
+    // Force pin into input mode
 
-  serialPutchar (node->fd, 'i' ) ;
-  serialPutchar (node->fd, pin - node->pinBase) ;
+    serialPutchar (node->fd, 'i' ) ;
+    serialPutchar (node->fd, pin - node->pinBase) ;
 
-  /**/ if (mode == PUD_UP)
-  {
-    serialPutchar (node->fd, '1') ;
-    serialPutchar (node->fd, pin - node->pinBase) ;
-  }
-  else if (mode == PUD_OFF)
-  {
-    serialPutchar (node->fd, '0') ;
-    serialPutchar (node->fd, pin - node->pinBase) ;
-  }
+    /**/ if (mode == PUD_UP)
+    {
+        serialPutchar (node->fd, '1') ;
+        serialPutchar (node->fd, pin - node->pinBase) ;
+    }
+    else if (mode == PUD_OFF)
+    {
+        serialPutchar (node->fd, '0') ;
+        serialPutchar (node->fd, pin - node->pinBase) ;
+    }
 }
 
 
@@ -91,8 +91,8 @@ static void myPullUpDnControl (struct wiringPiNodeStruct *node, int pin, int mod
 
 static void myDigitalWrite (struct wiringPiNodeStruct *node, int pin, int value)
 {
-  serialPutchar (node->fd, value == 0 ? '0' : '1') ;
-  serialPutchar (node->fd, pin - node->pinBase) ;
+    serialPutchar (node->fd, value == 0 ? '0' : '1') ;
+    serialPutchar (node->fd, pin - node->pinBase) ;
 }
 
 
@@ -103,9 +103,9 @@ static void myDigitalWrite (struct wiringPiNodeStruct *node, int pin, int value)
 
 static void myPwmWrite (struct wiringPiNodeStruct *node, int pin, int value)
 {
-  serialPutchar (node->fd, 'v') ;
-  serialPutchar (node->fd, pin - node->pinBase) ;
-  serialPutchar (node->fd, value & 0xFF) ;
+    serialPutchar (node->fd, 'v') ;
+    serialPutchar (node->fd, pin - node->pinBase) ;
+    serialPutchar (node->fd, value & 0xFF) ;
 }
 
 
@@ -116,14 +116,14 @@ static void myPwmWrite (struct wiringPiNodeStruct *node, int pin, int value)
 
 static int myAnalogRead (struct wiringPiNodeStruct *node, int pin)
 {
-  int vHi, vLo ;
+    int vHi, vLo ;
 
-  serialPutchar (node->fd, 'a') ;
-  serialPutchar (node->fd, pin - node->pinBase) ;
-  vHi = serialGetchar (node->fd) ;
-  vLo = serialGetchar (node->fd) ;
+    serialPutchar (node->fd, 'a') ;
+    serialPutchar (node->fd, pin - node->pinBase) ;
+    vHi = serialGetchar (node->fd) ;
+    vLo = serialGetchar (node->fd) ;
 
-  return (vHi << 8) | vLo ;
+    return (vHi << 8) | vLo ;
 }
 
 
@@ -134,9 +134,9 @@ static int myAnalogRead (struct wiringPiNodeStruct *node, int pin)
 
 static int myDigitalRead (struct wiringPiNodeStruct *node, int pin)
 {
-  serialPutchar (node->fd, 'r') ; // Send read command
-  serialPutchar (node->fd, pin - node->pinBase) ;
-  return (serialGetchar (node->fd) == '0') ? 0 : 1 ;
+    serialPutchar (node->fd, 'r') ; // Send read command
+    serialPutchar (node->fd, pin - node->pinBase) ;
+    return (serialGetchar (node->fd) == '0') ? 0 : 1 ;
 }
 
 
@@ -150,52 +150,52 @@ static int myDigitalRead (struct wiringPiNodeStruct *node, int pin)
 
 int drcSetupSerial (const int pinBase, const int numPins, const char *device, const int baud)
 {
-  int fd ;
-  int ok, tries ;
-  time_t then ;
-  struct wiringPiNodeStruct *node ;
+    int fd ;
+    int ok, tries ;
+    time_t then ;
+    struct wiringPiNodeStruct *node ;
 
-  if ((fd = serialOpen (device, baud)) < 0)
-    return wiringPiFailure (WPI_ALMOST, "Unable to open DRC device (%s): %s", device, strerror (errno)) ;
+    if ((fd = serialOpen (device, baud)) < 0)
+        return wiringPiFailure (WPI_ALMOST, "Unable to open DRC device (%s): %s", device, strerror (errno)) ;
 
-  delay (10) ;	// May need longer if it's an Uno that reboots on the open...
+    delay (10) ;	// May need longer if it's an Uno that reboots on the open...
 
-// Flush any pending input
+    // Flush any pending input
 
-  while (serialDataAvail (fd))
-    (void)serialGetchar (fd) ;
+    while (serialDataAvail (fd))
+        (void)serialGetchar (fd) ;
 
-  ok = FALSE ;
-  for (tries = 1 ; (tries < 5) && (!ok) ; ++tries)
-  {
-    serialPutchar (fd, '@') ;		// Ping
-    then = time (NULL) + 2 ;
-    while (time (NULL) < then)
-      if (serialDataAvail (fd))
-      {
-        if (serialGetchar (fd) == '@')
-        {
-          ok = TRUE ;
-          break ;
-        }
-      }
-  }
+    ok = FALSE ;
+    for (tries = 1 ; (tries < 5) && (!ok) ; ++tries)
+    {
+        serialPutchar (fd, '@') ;		// Ping
+        then = time (NULL) + 2 ;
+        while (time (NULL) < then)
+            if (serialDataAvail (fd))
+            {
+                if (serialGetchar (fd) == '@')
+                {
+                    ok = TRUE ;
+                    break ;
+                }
+            }
+    }
 
-  if (!ok)
-  {
-    serialClose (fd) ;
-    return wiringPiFailure (WPI_FATAL, "Unable to communicate with DRC serial device") ;
-  }
+    if (!ok)
+    {
+        serialClose (fd) ;
+        return wiringPiFailure (WPI_FATAL, "Unable to communicate with DRC serial device") ;
+    }
 
-  node = wiringPiNewNode (pinBase, numPins) ;
+    node = wiringPiNewNode (pinBase, numPins) ;
 
-  node->fd              = fd ;
-  node->pinMode         = myPinMode ;
-  node->pullUpDnControl = myPullUpDnControl ;
-  node->analogRead      = myAnalogRead ;
-  node->digitalRead     = myDigitalRead ;
-  node->digitalWrite    = myDigitalWrite ;
-  node->pwmWrite        = myPwmWrite ;
+    node->fd              = fd ;
+    node->pinMode         = myPinMode ;
+    node->pullUpDnControl = myPullUpDnControl ;
+    node->analogRead      = myAnalogRead ;
+    node->digitalRead     = myDigitalRead ;
+    node->digitalWrite    = myDigitalWrite ;
+    node->pwmWrite        = myPwmWrite ;
 
-  return 0 ;
+    return 0 ;
 }

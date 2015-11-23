@@ -68,7 +68,7 @@
 
 #define I2C_SMBUS_QUICK		    0
 #define I2C_SMBUS_BYTE		    1
-#define I2C_SMBUS_BYTE_DATA	    2 
+#define I2C_SMBUS_BYTE_DATA	    2
 #define I2C_SMBUS_WORD_DATA	    3
 #define I2C_SMBUS_PROC_CALL	    4
 #define I2C_SMBUS_BLOCK_DATA	    5
@@ -78,35 +78,35 @@
 
 // SMBus messages
 
-#define I2C_SMBUS_BLOCK_MAX	32	/* As specified in SMBus standard */	
+#define I2C_SMBUS_BLOCK_MAX	32	/* As specified in SMBus standard */
 #define I2C_SMBUS_I2C_BLOCK_MAX	32	/* Not specified but we use same structure */
 
 // Structures used in the ioctl() calls
 
 union i2c_smbus_data
 {
-  uint8_t  byte ;
-  uint16_t word ;
-  uint8_t  block [I2C_SMBUS_BLOCK_MAX + 2] ;	// block [0] is used for length + one more for PEC
+    uint8_t  byte ;
+    uint16_t word ;
+    uint8_t  block [I2C_SMBUS_BLOCK_MAX + 2] ;	// block [0] is used for length + one more for PEC
 } ;
 
 struct i2c_smbus_ioctl_data
 {
-  char read_write ;
-  uint8_t command ;
-  int size ;
-  union i2c_smbus_data *data ;
+    char read_write ;
+    uint8_t command ;
+    int size ;
+    union i2c_smbus_data *data ;
 } ;
 
 static inline int i2c_smbus_access (int fd, char rw, uint8_t command, int size, union i2c_smbus_data *data)
 {
-  struct i2c_smbus_ioctl_data args ;
+    struct i2c_smbus_ioctl_data args ;
 
-  args.read_write = rw ;
-  args.command    = command ;
-  args.size       = size ;
-  args.data       = data ;
-  return ioctl (fd, I2C_SMBUS, &args) ;
+    args.read_write = rw ;
+    args.command    = command ;
+    args.size       = size ;
+    args.data       = data ;
+    return ioctl (fd, I2C_SMBUS, &args) ;
 }
 
 
@@ -118,12 +118,12 @@ static inline int i2c_smbus_access (int fd, char rw, uint8_t command, int size, 
 
 int wiringPiI2CRead (int fd)
 {
-  union i2c_smbus_data data ;
+    union i2c_smbus_data data ;
 
-  if (i2c_smbus_access (fd, I2C_SMBUS_READ, 0, I2C_SMBUS_BYTE, &data))
-    return -1 ;
-  else
-    return data.byte & 0xFF ;
+    if (i2c_smbus_access (fd, I2C_SMBUS_READ, 0, I2C_SMBUS_BYTE, &data))
+        return -1 ;
+    else
+        return data.byte & 0xFF ;
 }
 
 
@@ -135,22 +135,22 @@ int wiringPiI2CRead (int fd)
 
 int wiringPiI2CReadReg8 (int fd, int reg)
 {
-  union i2c_smbus_data data;
+    union i2c_smbus_data data;
 
-  if (i2c_smbus_access (fd, I2C_SMBUS_READ, reg, I2C_SMBUS_BYTE_DATA, &data))
-    return -1 ;
-  else
-    return data.byte & 0xFF ;
+    if (i2c_smbus_access (fd, I2C_SMBUS_READ, reg, I2C_SMBUS_BYTE_DATA, &data))
+        return -1 ;
+    else
+        return data.byte & 0xFF ;
 }
 
 int wiringPiI2CReadReg16 (int fd, int reg)
 {
-  union i2c_smbus_data data;
+    union i2c_smbus_data data;
 
-  if (i2c_smbus_access (fd, I2C_SMBUS_READ, reg, I2C_SMBUS_WORD_DATA, &data))
-    return -1 ;
-  else
-    return data.word & 0xFFFF ;
+    if (i2c_smbus_access (fd, I2C_SMBUS_READ, reg, I2C_SMBUS_WORD_DATA, &data))
+        return -1 ;
+    else
+        return data.word & 0xFFFF ;
 }
 
 
@@ -162,7 +162,7 @@ int wiringPiI2CReadReg16 (int fd, int reg)
 
 int wiringPiI2CWrite (int fd, int data)
 {
-  return i2c_smbus_access (fd, I2C_SMBUS_WRITE, data, I2C_SMBUS_BYTE, NULL) ;
+    return i2c_smbus_access (fd, I2C_SMBUS_WRITE, data, I2C_SMBUS_BYTE, NULL) ;
 }
 
 
@@ -174,18 +174,18 @@ int wiringPiI2CWrite (int fd, int data)
 
 int wiringPiI2CWriteReg8 (int fd, int reg, int value)
 {
-  union i2c_smbus_data data ;
+    union i2c_smbus_data data ;
 
-  data.byte = value ;
-  return i2c_smbus_access (fd, I2C_SMBUS_WRITE, reg, I2C_SMBUS_BYTE_DATA, &data) ;
+    data.byte = value ;
+    return i2c_smbus_access (fd, I2C_SMBUS_WRITE, reg, I2C_SMBUS_BYTE_DATA, &data) ;
 }
 
 int wiringPiI2CWriteReg16 (int fd, int reg, int value)
 {
-  union i2c_smbus_data data ;
+    union i2c_smbus_data data ;
 
-  data.word = value ;
-  return i2c_smbus_access (fd, I2C_SMBUS_WRITE, reg, I2C_SMBUS_WORD_DATA, &data) ;
+    data.word = value ;
+    return i2c_smbus_access (fd, I2C_SMBUS_WRITE, reg, I2C_SMBUS_WORD_DATA, &data) ;
 }
 
 
@@ -198,15 +198,15 @@ int wiringPiI2CWriteReg16 (int fd, int reg, int value)
 
 int wiringPiI2CSetupInterface (const char *device, int devId)
 {
-  int fd ;
+    int fd ;
 
-  if ((fd = open (device, O_RDWR)) < 0)
-    return wiringPiFailure (WPI_ALMOST, "Unable to open I2C device: %s\n", strerror (errno)) ;
+    if ((fd = open (device, O_RDWR)) < 0)
+        return wiringPiFailure (WPI_ALMOST, "Unable to open I2C device: %s\n", strerror (errno)) ;
 
-  if (ioctl (fd, I2C_SLAVE, devId) < 0)
-    return wiringPiFailure (WPI_ALMOST, "Unable to select I2C device: %s\n", strerror (errno)) ;
+    if (ioctl (fd, I2C_SLAVE, devId) < 0)
+        return wiringPiFailure (WPI_ALMOST, "Unable to select I2C device: %s\n", strerror (errno)) ;
 
-  return fd ;
+    return fd ;
 }
 
 
@@ -218,19 +218,19 @@ int wiringPiI2CSetupInterface (const char *device, int devId)
 
 int wiringPiI2CSetup (const int devId)
 {
-  int rev ;
-  const char *device ;
+    int rev ;
+    const char *device ;
 
-  rev = piBoardRev () ;
-/*modify for BananaPro by LeMaker team*/
-  if (rev == 1) 
-    device = "/dev/i2c-0" ;
-  else if (rev == 2)
-   device = "/dev/i2c-1" ;
-  else if (rev == 3 || rev == 4)
-    device = "/dev/i2c-2";
-else
-	device = "/dev/i2c-3" ;
+    rev = piBoardRev () ;
+    /*modify for BananaPro by LeMaker team*/
+    if (rev == 1)
+        device = "/dev/i2c-0" ;
+    else if (rev == 2)
+        device = "/dev/i2c-1" ;
+    else if (rev == 3 || rev == 4)
+        device = "/dev/i2c-2";
+    else
+        device = "/dev/i2c-3" ;
 
-  return wiringPiI2CSetupInterface (device, devId) ;
+    return wiringPiI2CSetupInterface (device, devId) ;
 }

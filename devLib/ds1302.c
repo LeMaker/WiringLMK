@@ -58,19 +58,22 @@ static int dPin, cPin, sPin ;
 
 static unsigned int dsShiftIn (void)
 {
-  uint8_t value = 0 ;
-  int i ;
+    uint8_t value = 0 ;
+    int i ;
 
-  pinMode (dPin, INPUT) ;	delayMicroseconds (1) ;
+    pinMode (dPin, INPUT) ;
+    delayMicroseconds (1) ;
 
-  for (i = 0 ; i < 8 ; ++i)
-  {
-    value |= (digitalRead (dPin) << i) ;
-    digitalWrite (cPin, HIGH) ; delayMicroseconds (1) ;
-    digitalWrite (cPin, LOW) ;	delayMicroseconds (1) ;
-  }
+    for (i = 0 ; i < 8 ; ++i)
+    {
+        value |= (digitalRead (dPin) << i) ;
+        digitalWrite (cPin, HIGH) ;
+        delayMicroseconds (1) ;
+        digitalWrite (cPin, LOW) ;
+        delayMicroseconds (1) ;
+    }
 
-  return value;
+    return value;
 }
 
 
@@ -83,16 +86,19 @@ static unsigned int dsShiftIn (void)
 
 static void dsShiftOut (unsigned int data)
 {
-  int i ;
+    int i ;
 
-  pinMode (dPin, OUTPUT) ;
+    pinMode (dPin, OUTPUT) ;
 
-  for (i = 0 ; i < 8 ; ++i)
-  {
-    digitalWrite (dPin, data & (1 << i)) ;	delayMicroseconds (1) ;
-    digitalWrite (cPin, HIGH) ;			delayMicroseconds (1) ;
-    digitalWrite (cPin, LOW) ;			delayMicroseconds (1) ;
-  }
+    for (i = 0 ; i < 8 ; ++i)
+    {
+        digitalWrite (dPin, data & (1 << i)) ;
+        delayMicroseconds (1) ;
+        digitalWrite (cPin, HIGH) ;
+        delayMicroseconds (1) ;
+        digitalWrite (cPin, LOW) ;
+        delayMicroseconds (1) ;
+    }
 }
 
 
@@ -104,22 +110,26 @@ static void dsShiftOut (unsigned int data)
 
 static unsigned int ds1302regRead (const int reg)
 {
-  unsigned int data ;
+    unsigned int data ;
 
-  digitalWrite (sPin, HIGH) ; delayMicroseconds (1) ;
+    digitalWrite (sPin, HIGH) ;
+    delayMicroseconds (1) ;
     dsShiftOut (reg) ;
     data = dsShiftIn () ;
-  digitalWrite (sPin, LOW)  ; delayMicroseconds (1) ;
+    digitalWrite (sPin, LOW)  ;
+    delayMicroseconds (1) ;
 
-  return data ;
+    return data ;
 }
 
 static void ds1302regWrite (const int reg, const unsigned int data)
 {
-  digitalWrite (sPin, HIGH) ; delayMicroseconds (1) ;
+    digitalWrite (sPin, HIGH) ;
+    delayMicroseconds (1) ;
     dsShiftOut (reg) ;
     dsShiftOut (data) ;
-  digitalWrite (sPin, LOW)  ; delayMicroseconds (1) ;
+    digitalWrite (sPin, LOW)  ;
+    delayMicroseconds (1) ;
 }
 
 
@@ -131,12 +141,12 @@ static void ds1302regWrite (const int reg, const unsigned int data)
 
 unsigned int ds1302rtcRead (const int reg)
 {
-  return ds1302regRead (0x81 | ((reg & 0x1F) << 1)) ;
+    return ds1302regRead (0x81 | ((reg & 0x1F) << 1)) ;
 }
 
 void ds1302rtcWrite (int reg, unsigned int data)
 {
-  ds1302regWrite (0x80 | ((reg & 0x1F) << 1), data) ;
+    ds1302regWrite (0x80 | ((reg & 0x1F) << 1), data) ;
 }
 
 
@@ -148,12 +158,12 @@ void ds1302rtcWrite (int reg, unsigned int data)
 
 unsigned int ds1302ramRead (const int addr)
 {
-  return ds1302regRead (0xC1 | ((addr & 0x1F) << 1)) ;
+    return ds1302regRead (0xC1 | ((addr & 0x1F) << 1)) ;
 }
 
 void ds1302ramWrite (const int addr, const unsigned int data)
 {
-  ds1302regWrite ( 0xC0 | ((addr & 0x1F) << 1), data) ;
+    ds1302regWrite ( 0xC0 | ((addr & 0x1F) << 1), data) ;
 }
 
 /*
@@ -164,16 +174,18 @@ void ds1302ramWrite (const int addr, const unsigned int data)
 
 void ds1302clockRead (int clockData [8])
 {
-  int i ;
-  unsigned int regVal = 0x81 | ((RTC_BM & 0x1F) << 1) ;
+    int i ;
+    unsigned int regVal = 0x81 | ((RTC_BM & 0x1F) << 1) ;
 
-  digitalWrite (sPin, HIGH) ; delayMicroseconds (1) ;
+    digitalWrite (sPin, HIGH) ;
+    delayMicroseconds (1) ;
 
-  dsShiftOut (regVal) ;
-  for (i = 0 ; i < 8 ; ++i)
-    clockData [i] = dsShiftIn () ;
+    dsShiftOut (regVal) ;
+    for (i = 0 ; i < 8 ; ++i)
+        clockData [i] = dsShiftIn () ;
 
-  digitalWrite (sPin, LOW) ;  delayMicroseconds (1) ;
+    digitalWrite (sPin, LOW) ;
+    delayMicroseconds (1) ;
 }
 
 
@@ -185,16 +197,18 @@ void ds1302clockRead (int clockData [8])
 
 void ds1302clockWrite (const int clockData [8])
 {
-  int i ;
-  unsigned int regVal = 0x80 | ((RTC_BM & 0x1F) << 1) ;
+    int i ;
+    unsigned int regVal = 0x80 | ((RTC_BM & 0x1F) << 1) ;
 
-  digitalWrite (sPin, HIGH) ; delayMicroseconds (1) ;
+    digitalWrite (sPin, HIGH) ;
+    delayMicroseconds (1) ;
 
-  dsShiftOut (regVal) ;
-  for (i = 0 ; i < 8 ; ++i)
-    dsShiftOut (clockData [i]) ;
+    dsShiftOut (regVal) ;
+    for (i = 0 ; i < 8 ; ++i)
+        dsShiftOut (clockData [i]) ;
 
-  digitalWrite (sPin, LOW) ;  delayMicroseconds (1) ;
+    digitalWrite (sPin, LOW) ;
+    delayMicroseconds (1) ;
 }
 
 
@@ -207,10 +221,10 @@ void ds1302clockWrite (const int clockData [8])
 
 void ds1302trickleCharge (const int diodes, const int resistors)
 {
-  if (diodes + resistors == 0)
-    ds1302rtcWrite (RTC_TC, 0x5C) ;	// Disabled
-  else
-    ds1302rtcWrite (RTC_TC, 0xA0 | ((diodes & 3) << 2) | (resistors & 3)) ;
+    if (diodes + resistors == 0)
+        ds1302rtcWrite (RTC_TC, 0x5C) ;	// Disabled
+    else
+        ds1302rtcWrite (RTC_TC, 0xA0 | ((diodes & 3) << 2) | (resistors & 3)) ;
 }
 
 
@@ -224,17 +238,17 @@ void ds1302trickleCharge (const int diodes, const int resistors)
 
 void ds1302setup (const int clockPin, const int dataPin, const int csPin)
 {
-  dPin = dataPin ;
-  cPin = clockPin ;
-  sPin = csPin ;
+    dPin = dataPin ;
+    cPin = clockPin ;
+    sPin = csPin ;
 
-  digitalWrite (dPin, LOW) ;
-  digitalWrite (cPin, LOW) ;
-  digitalWrite (sPin, LOW) ;
+    digitalWrite (dPin, LOW) ;
+    digitalWrite (cPin, LOW) ;
+    digitalWrite (sPin, LOW) ;
 
-  pinMode (dPin, OUTPUT) ;
-  pinMode (cPin, OUTPUT) ;
-  pinMode (sPin, OUTPUT) ;
+    pinMode (dPin, OUTPUT) ;
+    pinMode (cPin, OUTPUT) ;
+    pinMode (sPin, OUTPUT) ;
 
-  ds1302rtcWrite (RTC_WP, 0) ;	// Remove write-protect
+    ds1302rtcWrite (RTC_WP, 0) ;	// Remove write-protect
 }

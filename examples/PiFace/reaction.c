@@ -30,7 +30,7 @@
 #include <piFace.h>
 
 
-int outputs [4] = { 0,0,0,0 } ;
+int outputs [4] = { 0, 0, 0, 0 } ;
 
 #define	PIFACE	200
 
@@ -42,9 +42,9 @@ int outputs [4] = { 0,0,0,0 } ;
 
 void light (int led, int value)
 {
-  led *= 2 ;
-  digitalWrite (PIFACE + led + 0, value) ;
-  digitalWrite (PIFACE + led + 1, value) ;
+    led *= 2 ;
+    digitalWrite (PIFACE + led + 0, value) ;
+    digitalWrite (PIFACE + led + 1, value) ;
 }
 
 /*
@@ -55,10 +55,10 @@ void light (int led, int value)
 
 void lightAll (int onoff)
 {
-  light (0, onoff) ;
-  light (1, onoff) ;
-  light (2, onoff) ;
-  light (3, onoff) ;
+    light (0, onoff) ;
+    light (1, onoff) ;
+    light (2, onoff) ;
+    light (3, onoff) ;
 }
 
 
@@ -70,125 +70,127 @@ void lightAll (int onoff)
 
 void waitForNoButtons (void)
 {
-  int i, button ;
+    int i, button ;
 
-  for (;;)
-  {
-    button = 0 ;
-    for (i = 0 ; i < 4 ; ++i)
-      button += digitalRead (PIFACE + i) ;
+    for (;;)
+    {
+        button = 0 ;
+        for (i = 0 ; i < 4 ; ++i)
+            button += digitalRead (PIFACE + i) ;
 
-    if (button == 4)
-      break ;
-  }
+        if (button == 4)
+            break ;
+    }
 }
 
 
 void scanButton (int button)
 {
-  if (digitalRead (PIFACE + button) == LOW)
-  {
-    outputs [button] ^= 1 ;
-    digitalWrite (PIFACE + button, outputs [button]) ;
-  }
+    if (digitalRead (PIFACE + button) == LOW)
+    {
+        outputs [button] ^= 1 ;
+        digitalWrite (PIFACE + button, outputs [button]) ;
+    }
 
-  while (digitalRead (PIFACE + button) == LOW)
-    delay (1) ;
+    while (digitalRead (PIFACE + button) == LOW)
+        delay (1) ;
 }
 
 
 int main (void)
 {
-  int i, j ;
-  int led, button ;
-  unsigned int start, stop ;
+    int i, j ;
+    int led, button ;
+    unsigned int start, stop ;
 
-  printf ("Raspberry Pi PiFace Reaction Timer\n") ;
-  printf ("==================================\n") ;
+    printf ("Raspberry Pi PiFace Reaction Timer\n") ;
+    printf ("==================================\n") ;
 
-  if (piFaceSetup (PIFACE) == -1)
-    exit (1) ;
+    if (piFaceSetup (PIFACE) == -1)
+        exit (1) ;
 
-// Enable internal pull-ups
+    // Enable internal pull-ups
 
-  for (i = 0 ; i < 8 ; ++i)
-    pullUpDnControl (PIFACE + i, PUD_UP) ;
+    for (i = 0 ; i < 8 ; ++i)
+        pullUpDnControl (PIFACE + i, PUD_UP) ;
 
 
-// Main game loop:
-//	Put some random LED pairs up for a few seconds, then blank ...
-
-  for (;;)
-  {
-    printf ("Press any button to start ... \n") ; fflush (stdout) ;
+    // Main game loop:
+    //	Put some random LED pairs up for a few seconds, then blank ...
 
     for (;;)
     {
-      led = rand () % 4 ;
-      light (led, 1) ;
-      delay (10) ;
-      light (led, 0) ;
+        printf ("Press any button to start ... \n") ;
+        fflush (stdout) ;
 
-      button = 0 ;
-      for (j = 0 ; j < 4 ; ++j)
-	button += digitalRead (PIFACE + j) ;
+        for (;;)
+        {
+            led = rand () % 4 ;
+            light (led, 1) ;
+            delay (10) ;
+            light (led, 0) ;
 
-      if (button != 4)
-	break ;
+            button = 0 ;
+            for (j = 0 ; j < 4 ; ++j)
+                button += digitalRead (PIFACE + j) ;
+
+            if (button != 4)
+                break ;
+        }
+
+        waitForNoButtons () ;
+
+        printf ("Wait for it ... ") ;
+        fflush (stdout) ;
+
+        led = rand () % 4 ;
+        delay (rand () % 500 + 1000) ;
+        light (led, 1) ;
+
+        start = millis () ;
+        for (button = -1 ; button == -1 ; )
+        {
+            for (j = 0 ; j < 4 ; ++j)
+                if (digitalRead (PIFACE + j) == 0)	// Pushed
+                {
+                    button = j ;
+                    break ;
+                }
+        }
+        stop = millis () ;
+        button = 3 - button ; // Correct for the buttons/LEDs reversed
+
+        light (led, 0) ;
+
+        waitForNoButtons () ;
+
+        light (led, 1) ;
+
+        if (button == led)
+        {
+            printf ("You got it in %3d mS\n", stop - start) ;
+        }
+        else
+        {
+            printf ("Missed: You pushed %d - LED was %d\n", button, led) ;
+            for (;;)
+            {
+                light (button, 1) ;
+                delay (100) ;
+                light (button, 0) ;
+                delay (100) ;
+                i = 0 ;
+                for (j = 0 ; j < 4 ; ++j)
+                    i += digitalRead (PIFACE + j) ;
+                if (i != 4)
+                    break ;
+            }
+
+            waitForNoButtons () ;
+        }
+        light (led, 0) ;
+        delay (4000) ;
     }
 
-    waitForNoButtons () ;
-
-    printf ("Wait for it ... ") ; fflush (stdout) ;
-
-    led = rand () % 4 ;
-    delay (rand () % 500 + 1000) ;
-    light (led, 1) ;
-
-    start = millis () ;
-    for (button = -1 ; button == -1 ; )
-    {
-      for (j = 0 ; j < 4 ; ++j)
-	if (digitalRead (PIFACE + j) == 0)	// Pushed
-	{
-	  button = j ;
-	  break ;
-	}
-    }
-    stop = millis () ;
-    button = 3 - button ; // Correct for the buttons/LEDs reversed
-
-    light (led, 0) ;
-
-    waitForNoButtons () ;
-
-    light (led, 1) ;
-
-    if (button == led)
-    {
-      printf ("You got it in %3d mS\n", stop - start) ;
-    }
-    else
-    {
-      printf ("Missed: You pushed %d - LED was %d\n", button, led) ;
-      for (;;)
-      {
-	light (button, 1) ;
-	delay (100) ;
-	light (button, 0) ;
-	delay (100) ;
-	i = 0 ;
-	for (j = 0 ; j < 4 ; ++j)
-	  i += digitalRead (PIFACE + j) ;
-	if (i != 4)
-	  break ;
-      }
-
-      waitForNoButtons () ;
-    }
-    light (led, 0) ;
-    delay (4000) ;
-  }
-
-  return 0 ;
+    return 0 ;
 }

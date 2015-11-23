@@ -42,19 +42,19 @@ static int leg2 [6] = {  0,  1,  2,  3, 14, 12 } ;
 
 void piGlow1 (const int leg, const int ring, const int intensity)
 {
-  int *legLeds ;
+    int *legLeds ;
 
-  if ((leg  < 0) || (leg  > 2)) return ;
-  if ((ring < 0) || (ring > 5)) return ;
+    if ((leg  < 0) || (leg  > 2)) return ;
+    if ((ring < 0) || (ring > 5)) return ;
 
-  /**/ if (leg == 0)
-    legLeds = leg0 ;
-  else if (leg == 1)
-    legLeds = leg1 ;
-  else
-    legLeds = leg2 ;
+    /**/ if (leg == 0)
+        legLeds = leg0 ;
+    else if (leg == 1)
+        legLeds = leg1 ;
+    else
+        legLeds = leg2 ;
 
-  analogWrite (PIGLOW_BASE + legLeds [ring], intensity) ;
+    analogWrite (PIGLOW_BASE + legLeds [ring], intensity) ;
 }
 
 /*
@@ -65,21 +65,21 @@ void piGlow1 (const int leg, const int ring, const int intensity)
 
 void piGlowLeg (const int leg, const int intensity)
 {
-  int  i ;
-  int *legLeds ;
+    int  i ;
+    int *legLeds ;
 
-  if ((leg < 0) || (leg > 2))
-    return ;
+    if ((leg < 0) || (leg > 2))
+        return ;
 
-  /**/ if (leg == 0)
-    legLeds = leg0 ;
-  else if (leg == 1)
-    legLeds = leg1 ;
-  else
-    legLeds = leg2 ;
+    /**/ if (leg == 0)
+        legLeds = leg0 ;
+    else if (leg == 1)
+        legLeds = leg1 ;
+    else
+        legLeds = leg2 ;
 
-  for (i = 0 ; i < 6 ; ++i)
-    analogWrite (PIGLOW_BASE + legLeds [i], intensity) ;
+    for (i = 0 ; i < 6 ; ++i)
+        analogWrite (PIGLOW_BASE + legLeds [i], intensity) ;
 }
 
 
@@ -91,12 +91,12 @@ void piGlowLeg (const int leg, const int intensity)
 
 void piGlowRing (const int ring, const int intensity)
 {
-  if ((ring < 0) || (ring > 5))
-    return ;
+    if ((ring < 0) || (ring > 5))
+        return ;
 
-  analogWrite (PIGLOW_BASE + leg0 [ring], intensity) ;
-  analogWrite (PIGLOW_BASE + leg1 [ring], intensity) ;
-  analogWrite (PIGLOW_BASE + leg2 [ring], intensity) ;
+    analogWrite (PIGLOW_BASE + leg0 [ring], intensity) ;
+    analogWrite (PIGLOW_BASE + leg1 [ring], intensity) ;
+    analogWrite (PIGLOW_BASE + leg2 [ring], intensity) ;
 }
 
 /*
@@ -107,12 +107,12 @@ void piGlowRing (const int ring, const int intensity)
 
 void piGlowSetup (int clear)
 {
-  sn3218Setup (PIGLOW_BASE) ;
+    sn3218Setup (PIGLOW_BASE) ;
 
-  if (clear)
-  {
-    piGlowLeg (0, 0) ;
-    piGlowLeg (1, 0) ;
-    piGlowLeg (2, 0) ;
-  }
+    if (clear)
+    {
+        piGlowLeg (0, 0) ;
+        piGlowLeg (1, 0) ;
+        piGlowLeg (2, 0) ;
+    }
 }

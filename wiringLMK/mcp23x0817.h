@@ -27,7 +27,7 @@
  */
 
 // MCP23x08 Registers
-	
+
 #define	MCP23x08_IODIR		0x00
 #define	MCP23x08_IPOL		0x01
 #define	MCP23x08_GPINTEN	0x02

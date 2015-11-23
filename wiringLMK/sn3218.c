@@ -35,11 +35,11 @@
 
 static void myAnalogWrite (struct wiringPiNodeStruct *node, int pin, int value)
 {
-  int fd   = node->fd ;
-  int chan = 0x01 + (pin - node->pinBase) ;
-  
-  wiringPiI2CWriteReg8 (fd, chan, value & 0xFF) ;	// Value
-  wiringPiI2CWriteReg8 (fd, 0x16, 0x00) ;		// Update
+    int fd   = node->fd ;
+    int chan = 0x01 + (pin - node->pinBase) ;
+
+    wiringPiI2CWriteReg8 (fd, chan, value & 0xFF) ;	// Value
+    wiringPiI2CWriteReg8 (fd, 0x16, 0x00) ;		// Update
 }
 
 /*
@@ -51,25 +51,25 @@ static void myAnalogWrite (struct wiringPiNodeStruct *node, int pin, int value)
 
 int sn3218Setup (const int pinBase)
 {
-  int fd ;
-  struct wiringPiNodeStruct *node ;
+    int fd ;
+    struct wiringPiNodeStruct *node ;
 
-  if ((fd = wiringPiI2CSetup (0x54)) < 0)
-    return fd ;
+    if ((fd = wiringPiI2CSetup (0x54)) < 0)
+        return fd ;
 
-// Setup the chip - initialise all 18 LEDs to off
+    // Setup the chip - initialise all 18 LEDs to off
 
-//wiringPiI2CWriteReg8 (fd, 0x17, 0) ;		// Reset
-  wiringPiI2CWriteReg8 (fd, 0x00, 1) ;		// Not Shutdown
-  wiringPiI2CWriteReg8 (fd, 0x13, 0x3F) ;	// Enable LEDs  0- 5
-  wiringPiI2CWriteReg8 (fd, 0x14, 0x3F) ;	// Enable LEDs  6-11
-  wiringPiI2CWriteReg8 (fd, 0x15, 0x3F) ;	// Enable LEDs 12-17
-  wiringPiI2CWriteReg8 (fd, 0x16, 0x00) ;	// Update
-  
-  node = wiringPiNewNode (pinBase, 18) ;
+    //wiringPiI2CWriteReg8 (fd, 0x17, 0) ;		// Reset
+    wiringPiI2CWriteReg8 (fd, 0x00, 1) ;		// Not Shutdown
+    wiringPiI2CWriteReg8 (fd, 0x13, 0x3F) ;	// Enable LEDs  0- 5
+    wiringPiI2CWriteReg8 (fd, 0x14, 0x3F) ;	// Enable LEDs  6-11
+    wiringPiI2CWriteReg8 (fd, 0x15, 0x3F) ;	// Enable LEDs 12-17
+    wiringPiI2CWriteReg8 (fd, 0x16, 0x00) ;	// Update
 
-  node->fd          = fd ;
-  node->analogWrite = myAnalogWrite ;
+    node = wiringPiNewNode (pinBase, 18) ;
 
-  return 0 ;
+    node->fd          = fd ;
+    node->analogWrite = myAnalogWrite ;
+
+    return 0 ;
 }

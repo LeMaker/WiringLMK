@@ -65,8 +65,8 @@ extern int wiringPiDebug ;
 
 struct extensionFunctionStruct
 {
-  const char *name ;
-  int	(*function)(char *progName, int pinBase, char *params) ;
+    const char *name ;
+    int	(*function)(char *progName, int pinBase, char *params) ;
 } ;
 
 
@@ -78,25 +78,25 @@ struct extensionFunctionStruct
 
 static char *extractInt (char *progName, char *p, int *num)
 {
-  if (*p != ':')
-  {
-    fprintf (stderr, "%s: colon expected\n", progName) ;
-    return NULL ;
-  }
+    if (*p != ':')
+    {
+        fprintf (stderr, "%s: colon expected\n", progName) ;
+        return NULL ;
+    }
 
-  ++p ;
-
-  if (!isdigit (*p))
-  {
-    fprintf (stderr, "%s: digit expected\n", progName) ;
-    return NULL ;
-  }
-
-  *num = strtol (p, NULL, 0) ;
-  while (isdigit (*p))
     ++p ;
 
-  return p ;
+    if (!isdigit (*p))
+    {
+        fprintf (stderr, "%s: digit expected\n", progName) ;
+        return NULL ;
+    }
+
+    *num = strtol (p, NULL, 0) ;
+    while (isdigit (*p))
+        ++p ;
+
+    return p ;
 }
 
 
@@ -108,32 +108,32 @@ static char *extractInt (char *progName, char *p, int *num)
 
 static char *extractStr (char *progName, char *p, char **str)
 {
-  char *q, *r ;
+    char *q, *r ;
 
-  if (*p != ':')
-  {
-    fprintf (stderr, "%s: colon expected\n", progName) ;
-    return NULL ;
-  }
+    if (*p != ':')
+    {
+        fprintf (stderr, "%s: colon expected\n", progName) ;
+        return NULL ;
+    }
 
-  ++p ;
+    ++p ;
 
-  if (!isprint (*p))
-  {
-    fprintf (stderr, "%s: character expected\n", progName) ;
-    return NULL ;
-  }
+    if (!isprint (*p))
+    {
+        fprintf (stderr, "%s: character expected\n", progName) ;
+        return NULL ;
+    }
 
-  q = p ;
-  while ((*q != 0) && (*q != ':'))
-    ++q ;
+    q = p ;
+    while ((*q != 0) && (*q != ':'))
+        ++q ;
 
-  *str = r = calloc (q - p + 2, 1) ;	// Zeros it
+    *str = r = calloc (q - p + 2, 1) ;	// Zeros it
 
-  while (p != q)
-    *r++ = *p++ ;
-    
-  return p ;
+    while (p != q)
+        *r++ = *p++ ;
+
+    return p ;
 }
 
 
@@ -147,20 +147,20 @@ static char *extractStr (char *progName, char *p, char **str)
 
 static int doExtensionMcp23008 (char *progName, int pinBase, char *params)
 {
-  int i2c ;
+    int i2c ;
 
-  if ((params = extractInt (progName, params, &i2c)) == NULL)
-    return FALSE ;
+    if ((params = extractInt (progName, params, &i2c)) == NULL)
+        return FALSE ;
 
-  if ((i2c < 0x03) || (i2c > 0x77))
-  {
-    fprintf (stderr, "%s: i2c address (0x%X) out of range\n", progName, i2c) ;
-    return FALSE ;
-  }
+    if ((i2c < 0x03) || (i2c > 0x77))
+    {
+        fprintf (stderr, "%s: i2c address (0x%X) out of range\n", progName, i2c) ;
+        return FALSE ;
+    }
 
-  mcp23008Setup (pinBase, i2c) ;
+    mcp23008Setup (pinBase, i2c) ;
 
-  return TRUE ;
+    return TRUE ;
 }
 
 
@@ -173,20 +173,20 @@ static int doExtensionMcp23008 (char *progName, int pinBase, char *params)
 
 static int doExtensionMcp23016 (char *progName, int pinBase, char *params)
 {
-  int i2c ;
+    int i2c ;
 
-  if ((params = extractInt (progName, params, &i2c)) == NULL)
-    return FALSE ;
+    if ((params = extractInt (progName, params, &i2c)) == NULL)
+        return FALSE ;
 
-  if ((i2c < 0x03) || (i2c > 0x77))
-  {
-    fprintf (stderr, "%s: i2c address (0x%X) out of range\n", progName, i2c) ;
-    return FALSE ;
-  }
+    if ((i2c < 0x03) || (i2c > 0x77))
+    {
+        fprintf (stderr, "%s: i2c address (0x%X) out of range\n", progName, i2c) ;
+        return FALSE ;
+    }
 
-  mcp23016Setup (pinBase, i2c) ;
+    mcp23016Setup (pinBase, i2c) ;
 
-  return TRUE ;
+    return TRUE ;
 }
 
 
@@ -199,20 +199,20 @@ static int doExtensionMcp23016 (char *progName, int pinBase, char *params)
 
 static int doExtensionMcp23017 (char *progName, int pinBase, char *params)
 {
-  int i2c ;
+    int i2c ;
 
-  if ((params = extractInt (progName, params, &i2c)) == NULL)
-    return FALSE ;
+    if ((params = extractInt (progName, params, &i2c)) == NULL)
+        return FALSE ;
 
-  if ((i2c < 0x03) || (i2c > 0x77))
-  {
-    fprintf (stderr, "%s: i2c address (0x%X) out of range\n", progName, i2c) ;
-    return FALSE ;
-  }
+    if ((i2c < 0x03) || (i2c > 0x77))
+    {
+        fprintf (stderr, "%s: i2c address (0x%X) out of range\n", progName, i2c) ;
+        return FALSE ;
+    }
 
-  mcp23017Setup (pinBase, i2c) ;
+    mcp23017Setup (pinBase, i2c) ;
 
-  return TRUE ;
+    return TRUE ;
 }
 
 
@@ -225,29 +225,29 @@ static int doExtensionMcp23017 (char *progName, int pinBase, char *params)
 
 static int doExtensionMcp23s08 (char *progName, int pinBase, char *params)
 {
-  int spi, port ;
+    int spi, port ;
 
-  if ((params = extractInt (progName, params, &spi)) == NULL)
-    return FALSE ;
+    if ((params = extractInt (progName, params, &spi)) == NULL)
+        return FALSE ;
 
-  if ((spi < 0) || (spi > 1))
-  {
-    fprintf (stderr, "%s: SPI address (%d) out of range\n", progName, spi) ;
-    return FALSE ;
-  }
+    if ((spi < 0) || (spi > 1))
+    {
+        fprintf (stderr, "%s: SPI address (%d) out of range\n", progName, spi) ;
+        return FALSE ;
+    }
 
-  if ((params = extractInt (progName, params, &port)) == NULL)
-    return FALSE ;
+    if ((params = extractInt (progName, params, &port)) == NULL)
+        return FALSE ;
 
-  if ((port < 0) || (port > 7))
-  {
-    fprintf (stderr, "%s: port address (%d) out of range\n", progName, port) ;
-    return FALSE ;
-  }
+    if ((port < 0) || (port > 7))
+    {
+        fprintf (stderr, "%s: port address (%d) out of range\n", progName, port) ;
+        return FALSE ;
+    }
 
-  mcp23s08Setup (pinBase, spi, port) ;
+    mcp23s08Setup (pinBase, spi, port) ;
 
-  return TRUE ;
+    return TRUE ;
 }
 
 
@@ -260,29 +260,29 @@ static int doExtensionMcp23s08 (char *progName, int pinBase, char *params)
 
 static int doExtensionMcp23s17 (char *progName, int pinBase, char *params)
 {
-  int spi, port ;
+    int spi, port ;
 
-  if ((params = extractInt (progName, params, &spi)) == NULL)
-    return FALSE ;
+    if ((params = extractInt (progName, params, &spi)) == NULL)
+        return FALSE ;
 
-  if ((spi < 0) || (spi > 1))
-  {
-    fprintf (stderr, "%s: SPI address (%d) out of range\n", progName, spi) ;
-    return FALSE ;
-  }
+    if ((spi < 0) || (spi > 1))
+    {
+        fprintf (stderr, "%s: SPI address (%d) out of range\n", progName, spi) ;
+        return FALSE ;
+    }
 
-  if ((params = extractInt (progName, params, &port)) == NULL)
-    return FALSE ;
+    if ((params = extractInt (progName, params, &port)) == NULL)
+        return FALSE ;
 
-  if ((port < 0) || (port > 7))
-  {
-    fprintf (stderr, "%s: port address (%d) out of range\n", progName, port) ;
-    return FALSE ;
-  }
+    if ((port < 0) || (port > 7))
+    {
+        fprintf (stderr, "%s: port address (%d) out of range\n", progName, port) ;
+        return FALSE ;
+    }
 
-  mcp23s17Setup (pinBase, spi, port) ;
+    mcp23s17Setup (pinBase, spi, port) ;
 
-  return TRUE ;
+    return TRUE ;
 }
 
 
@@ -295,31 +295,31 @@ static int doExtensionMcp23s17 (char *progName, int pinBase, char *params)
 
 static int doExtensionSr595 (char *progName, int pinBase, char *params)
 {
-  int pins, data, clock, latch ;
+    int pins, data, clock, latch ;
 
-// Extract pins
+    // Extract pins
 
-  if ((params = extractInt (progName, params, &pins)) == NULL)
-    return FALSE ;
+    if ((params = extractInt (progName, params, &pins)) == NULL)
+        return FALSE ;
 
-  if ((pins < 8) || (pins > 32))
-  {
-    fprintf (stderr, "%s: pin count (%d) out of range - 8-32 expected.\n", progName, pins) ;
-    return FALSE ;
-  }
+    if ((pins < 8) || (pins > 32))
+    {
+        fprintf (stderr, "%s: pin count (%d) out of range - 8-32 expected.\n", progName, pins) ;
+        return FALSE ;
+    }
 
-  if ((params = extractInt (progName, params, &data)) == NULL)
-    return FALSE ;
+    if ((params = extractInt (progName, params, &data)) == NULL)
+        return FALSE ;
 
-  if ((params = extractInt (progName, params, &clock)) == NULL)
-    return FALSE ;
+    if ((params = extractInt (progName, params, &clock)) == NULL)
+        return FALSE ;
 
-  if ((params = extractInt (progName, params, &latch)) == NULL)
-    return FALSE ;
+    if ((params = extractInt (progName, params, &latch)) == NULL)
+        return FALSE ;
 
-  sr595Setup (pinBase, pins, data, clock, latch) ;
+    sr595Setup (pinBase, pins, data, clock, latch) ;
 
-  return TRUE ;
+    return TRUE ;
 }
 
 
@@ -332,20 +332,20 @@ static int doExtensionSr595 (char *progName, int pinBase, char *params)
 
 static int doExtensionPcf8574 (char *progName, int pinBase, char *params)
 {
-  int i2c ;
+    int i2c ;
 
-  if ((params = extractInt (progName, params, &i2c)) == NULL)
-    return FALSE ;
+    if ((params = extractInt (progName, params, &i2c)) == NULL)
+        return FALSE ;
 
-  if ((i2c < 0x03) || (i2c > 0x77))
-  {
-    fprintf (stderr, "%s: i2c address (0x%X) out of range\n", progName, i2c) ;
-    return FALSE ;
-  }
+    if ((i2c < 0x03) || (i2c > 0x77))
+    {
+        fprintf (stderr, "%s: i2c address (0x%X) out of range\n", progName, i2c) ;
+        return FALSE ;
+    }
 
-  pcf8574Setup (pinBase, i2c) ;
+    pcf8574Setup (pinBase, i2c) ;
 
-  return TRUE ;
+    return TRUE ;
 }
 
 
@@ -358,20 +358,20 @@ static int doExtensionPcf8574 (char *progName, int pinBase, char *params)
 
 static int doExtensionPcf8591 (char *progName, int pinBase, char *params)
 {
-  int i2c ;
+    int i2c ;
 
-  if ((params = extractInt (progName, params, &i2c)) == NULL)
-    return FALSE ;
+    if ((params = extractInt (progName, params, &i2c)) == NULL)
+        return FALSE ;
 
-  if ((i2c < 0x03) || (i2c > 0x77))
-  {
-    fprintf (stderr, "%s: i2c address (0x%X) out of range\n", progName, i2c) ;
-    return FALSE ;
-  }
+    if ((i2c < 0x03) || (i2c > 0x77))
+    {
+        fprintf (stderr, "%s: i2c address (0x%X) out of range\n", progName, i2c) ;
+        return FALSE ;
+    }
 
-  pcf8591Setup (pinBase, i2c) ;
+    pcf8591Setup (pinBase, i2c) ;
 
-  return TRUE ;
+    return TRUE ;
 }
 
 
@@ -384,20 +384,20 @@ static int doExtensionPcf8591 (char *progName, int pinBase, char *params)
 
 static int doExtensionMax31855 (char *progName, int pinBase, char *params)
 {
-  int spi ;
+    int spi ;
 
-  if ((params = extractInt (progName, params, &spi)) == NULL)
-    return FALSE ;
+    if ((params = extractInt (progName, params, &spi)) == NULL)
+        return FALSE ;
 
-  if ((spi < 0) || (spi > 1))
-  {
-    fprintf (stderr, "%s: SPI channel (%d) out of range\n", progName, spi) ;
-    return FALSE ;
-  }
+    if ((spi < 0) || (spi > 1))
+    {
+        fprintf (stderr, "%s: SPI channel (%d) out of range\n", progName, spi) ;
+        return FALSE ;
+    }
 
-  max31855Setup (pinBase, spi) ;
+    max31855Setup (pinBase, spi) ;
 
-  return TRUE ;
+    return TRUE ;
 }
 
 
@@ -410,20 +410,20 @@ static int doExtensionMax31855 (char *progName, int pinBase, char *params)
 
 static int doExtensionMcp3002 (char *progName, int pinBase, char *params)
 {
-  int spi ;
+    int spi ;
 
-  if ((params = extractInt (progName, params, &spi)) == NULL)
-    return FALSE ;
+    if ((params = extractInt (progName, params, &spi)) == NULL)
+        return FALSE ;
 
-  if ((spi < 0) || (spi > 1))
-  {
-    fprintf (stderr, "%s: SPI channel (%d) out of range\n", progName, spi) ;
-    return FALSE ;
-  }
+    if ((spi < 0) || (spi > 1))
+    {
+        fprintf (stderr, "%s: SPI channel (%d) out of range\n", progName, spi) ;
+        return FALSE ;
+    }
 
-  mcp3002Setup (pinBase, spi) ;
+    mcp3002Setup (pinBase, spi) ;
 
-  return TRUE ;
+    return TRUE ;
 }
 
 
@@ -436,20 +436,20 @@ static int doExtensionMcp3002 (char *progName, int pinBase, char *params)
 
 static int doExtensionMcp3004 (char *progName, int pinBase, char *params)
 {
-  int spi ;
+    int spi ;
 
-  if ((params = extractInt (progName, params, &spi)) == NULL)
-    return FALSE ;
+    if ((params = extractInt (progName, params, &spi)) == NULL)
+        return FALSE ;
 
-  if ((spi < 0) || (spi > 1))
-  {
-    fprintf (stderr, "%s: SPI channel (%d) out of range\n", progName, spi) ;
-    return FALSE ;
-  }
+    if ((spi < 0) || (spi > 1))
+    {
+        fprintf (stderr, "%s: SPI channel (%d) out of range\n", progName, spi) ;
+        return FALSE ;
+    }
 
-  mcp3004Setup (pinBase, spi) ;
+    mcp3004Setup (pinBase, spi) ;
 
-  return TRUE ;
+    return TRUE ;
 }
 
 
@@ -462,20 +462,20 @@ static int doExtensionMcp3004 (char *progName, int pinBase, char *params)
 
 static int doExtensionMax5322 (char *progName, int pinBase, char *params)
 {
-  int spi ;
+    int spi ;
 
-  if ((params = extractInt (progName, params, &spi)) == NULL)
-    return FALSE ;
+    if ((params = extractInt (progName, params, &spi)) == NULL)
+        return FALSE ;
 
-  if ((spi < 0) || (spi > 1))
-  {
-    fprintf (stderr, "%s: SPI channel (%d) out of range\n", progName, spi) ;
-    return FALSE ;
-  }
+    if ((spi < 0) || (spi > 1))
+    {
+        fprintf (stderr, "%s: SPI channel (%d) out of range\n", progName, spi) ;
+        return FALSE ;
+    }
 
-  max5322Setup (pinBase, spi) ;
+    max5322Setup (pinBase, spi) ;
 
-  return TRUE ;
+    return TRUE ;
 }
 
 
@@ -488,20 +488,20 @@ static int doExtensionMax5322 (char *progName, int pinBase, char *params)
 
 static int doExtensionMcp4802 (char *progName, int pinBase, char *params)
 {
-  int spi ;
+    int spi ;
 
-  if ((params = extractInt (progName, params, &spi)) == NULL)
-    return FALSE ;
+    if ((params = extractInt (progName, params, &spi)) == NULL)
+        return FALSE ;
 
-  if ((spi < 0) || (spi > 1))
-  {
-    fprintf (stderr, "%s: SPI channel (%d) out of range\n", progName, spi) ;
-    return FALSE ;
-  }
+    if ((spi < 0) || (spi > 1))
+    {
+        fprintf (stderr, "%s: SPI channel (%d) out of range\n", progName, spi) ;
+        return FALSE ;
+    }
 
-  mcp4802Setup (pinBase, spi) ;
+    mcp4802Setup (pinBase, spi) ;
 
-  return TRUE ;
+    return TRUE ;
 }
 
 
@@ -514,8 +514,8 @@ static int doExtensionMcp4802 (char *progName, int pinBase, char *params)
 
 static int doExtensionSn3218 (char *progName, int pinBase, char *params)
 {
-  sn3218Setup (pinBase) ;
-  return TRUE ;
+    sn3218Setup (pinBase) ;
+    return TRUE ;
 }
 
 
@@ -528,38 +528,38 @@ static int doExtensionSn3218 (char *progName, int pinBase, char *params)
 
 static int doExtensionMcp3422 (char *progName, int pinBase, char *params)
 {
-  int i2c, sampleRate, gain ;
+    int i2c, sampleRate, gain ;
 
-  if ((params = extractInt (progName, params, &i2c)) == NULL)
-    return FALSE ;
+    if ((params = extractInt (progName, params, &i2c)) == NULL)
+        return FALSE ;
 
-  if ((i2c < 0x03) || (i2c > 0x77))
-  {
-    fprintf (stderr, "%s: i2c address (0x%X) out of range\n", progName, i2c) ;
-    return FALSE ;
-  }
+    if ((i2c < 0x03) || (i2c > 0x77))
+    {
+        fprintf (stderr, "%s: i2c address (0x%X) out of range\n", progName, i2c) ;
+        return FALSE ;
+    }
 
-  if ((params = extractInt (progName, params, &sampleRate)) == NULL)
-    return FALSE ;
+    if ((params = extractInt (progName, params, &sampleRate)) == NULL)
+        return FALSE ;
 
-  if ((sampleRate < 0) || (sampleRate > 3))
-  {
-    fprintf (stderr, "%s: sample rate (%d) out of range\n", progName, sampleRate) ;
-    return FALSE ;
-  }
+    if ((sampleRate < 0) || (sampleRate > 3))
+    {
+        fprintf (stderr, "%s: sample rate (%d) out of range\n", progName, sampleRate) ;
+        return FALSE ;
+    }
 
-  if ((params = extractInt (progName, params, &gain)) == NULL)
-    return FALSE ;
+    if ((params = extractInt (progName, params, &gain)) == NULL)
+        return FALSE ;
 
-  if ((gain < 0) || (gain > 3))
-  {
-    fprintf (stderr, "%s: gain (%d) out of range\n", progName, gain) ;
-    return FALSE ;
-  }
+    if ((gain < 0) || (gain > 3))
+    {
+        fprintf (stderr, "%s: gain (%d) out of range\n", progName, gain) ;
+        return FALSE ;
+    }
 
-  mcp3422Setup (pinBase, i2c, sampleRate, gain) ;
+    mcp3422Setup (pinBase, i2c, sampleRate, gain) ;
 
-  return TRUE ;
+    return TRUE ;
 }
 
 /*
@@ -571,39 +571,39 @@ static int doExtensionMcp3422 (char *progName, int pinBase, char *params)
 
 static int doExtensionDrcS (char *progName, int pinBase, char *params)
 {
-  char *port ;
-  int pins, baud ;
+    char *port ;
+    int pins, baud ;
 
-  if ((params = extractInt (progName, params, &pins)) == NULL)
-    return FALSE ;
+    if ((params = extractInt (progName, params, &pins)) == NULL)
+        return FALSE ;
 
-  if ((pins < 1) || (pins > 100))
-  {
-    fprintf (stderr, "%s: pins (%d) out of range (2-100)\n", progName, pins) ;
-    return FALSE ;
-  }
-  
-  if ((params = extractStr (progName, params, &port)) == NULL)
-    return FALSE ;
+    if ((pins < 1) || (pins > 100))
+    {
+        fprintf (stderr, "%s: pins (%d) out of range (2-100)\n", progName, pins) ;
+        return FALSE ;
+    }
 
-  if (strlen (port) == 0)
-  {
-    fprintf (stderr, "%s: serial port device name required\n", progName) ;
-    return FALSE ;
-  }
+    if ((params = extractStr (progName, params, &port)) == NULL)
+        return FALSE ;
 
-  if ((params = extractInt (progName, params, &baud)) == NULL)
-    return FALSE ;
+    if (strlen (port) == 0)
+    {
+        fprintf (stderr, "%s: serial port device name required\n", progName) ;
+        return FALSE ;
+    }
 
-  if ((baud < 1) || (baud > 4000000))
-  {
-    fprintf (stderr, "%s: baud rate (%d) out of range\n", progName, baud) ;
-    return FALSE ;
-  }
+    if ((params = extractInt (progName, params, &baud)) == NULL)
+        return FALSE ;
 
-  drcSetupSerial (pinBase, pins, port, baud) ;
+    if ((baud < 1) || (baud > 4000000))
+    {
+        fprintf (stderr, "%s: baud rate (%d) out of range\n", progName, baud) ;
+        return FALSE ;
+    }
 
-  return TRUE ;
+    drcSetupSerial (pinBase, pins, port, baud) ;
+
+    return TRUE ;
 }
 
 
@@ -613,25 +613,25 @@ static int doExtensionDrcS (char *progName, int pinBase, char *params)
  *********************************************************************************
  */
 
-struct extensionFunctionStruct extensionFunctions [] = 
+struct extensionFunctionStruct extensionFunctions [] =
 {
-  { "mcp23008",		&doExtensionMcp23008 	},
-  { "mcp23016",		&doExtensionMcp23016 	},
-  { "mcp23017",		&doExtensionMcp23017 	},
-  { "mcp23s08",		&doExtensionMcp23s08 	},
-  { "mcp23s17",		&doExtensionMcp23s17 	},
-  { "sr595",		&doExtensionSr595	},
-  { "pcf8574",		&doExtensionPcf8574	},
-  { "pcf8591",		&doExtensionPcf8591	},
-  { "mcp3002",		&doExtensionMcp3002	},
-  { "mcp3004",		&doExtensionMcp3004	},
-  { "mcp4802",		&doExtensionMcp4802	},
-  { "mcp3422",		&doExtensionMcp3422	},
-  { "max31855",		&doExtensionMax31855	},
-  { "max5322",		&doExtensionMax5322	},
-  { "sn3218",		&doExtensionSn3218	},
-  { "drcs",		&doExtensionDrcS	},
-  { NULL,		NULL		 	},
+    { "mcp23008",		&doExtensionMcp23008 	},
+    { "mcp23016",		&doExtensionMcp23016 	},
+    { "mcp23017",		&doExtensionMcp23017 	},
+    { "mcp23s08",		&doExtensionMcp23s08 	},
+    { "mcp23s17",		&doExtensionMcp23s17 	},
+    { "sr595",		&doExtensionSr595	},
+    { "pcf8574",		&doExtensionPcf8574	},
+    { "pcf8591",		&doExtensionPcf8591	},
+    { "mcp3002",		&doExtensionMcp3002	},
+    { "mcp3004",		&doExtensionMcp3004	},
+    { "mcp4802",		&doExtensionMcp4802	},
+    { "mcp3422",		&doExtensionMcp3422	},
+    { "max31855",		&doExtensionMax31855	},
+    { "max5322",		&doExtensionMax5322	},
+    { "sn3218",		&doExtensionSn3218	},
+    { "drcs",		&doExtensionDrcS	},
+    { NULL,		NULL		 	},
 } ;
 
 
@@ -643,58 +643,58 @@ struct extensionFunctionStruct extensionFunctions [] =
 
 int doExtension (char *progName, char *extensionData)
 {
-  char *p ;
-  char *extension = extensionData ;
-  struct extensionFunctionStruct *extensionFn ;
-  int pinBase = 0 ;
+    char *p ;
+    char *extension = extensionData ;
+    struct extensionFunctionStruct *extensionFn ;
+    int pinBase = 0 ;
 
-// Get the extension extension name by finding the first colon
+    // Get the extension extension name by finding the first colon
 
-  p = extension ;
-  while (*p != ':')
-  {
-    if (!*p)	// ran out of characters
+    p = extension ;
+    while (*p != ':')
     {
-      fprintf (stderr, "%s: extension name not terminated by a colon\n", progName) ;
-      return FALSE ;
-    }
-    ++p ;
-  }
-
-  *p++ = 0 ;
-
-  if (!isdigit (*p))
-  {
-    fprintf (stderr, "%s: pinBase number expected after extension name\n", progName) ;
-    return FALSE ;
-  }
-
-  while (isdigit (*p))
-  {
-    if (pinBase > 1000000000)
-    {
-      fprintf (stderr, "%s: pinBase too large\n", progName) ;
-      return FALSE ;
+        if (!*p)	// ran out of characters
+        {
+            fprintf (stderr, "%s: extension name not terminated by a colon\n", progName) ;
+            return FALSE ;
+        }
+        ++p ;
     }
 
-    pinBase = pinBase * 10 + (*p - '0') ;
-    ++p ;
-  }
+    *p++ = 0 ;
 
-  if (pinBase < 64)
-  {
-    fprintf (stderr, "%s: pinBase (%d) too small. Minimum is 64.\n", progName, pinBase) ;
+    if (!isdigit (*p))
+    {
+        fprintf (stderr, "%s: pinBase number expected after extension name\n", progName) ;
+        return FALSE ;
+    }
+
+    while (isdigit (*p))
+    {
+        if (pinBase > 1000000000)
+        {
+            fprintf (stderr, "%s: pinBase too large\n", progName) ;
+            return FALSE ;
+        }
+
+        pinBase = pinBase * 10 + (*p - '0') ;
+        ++p ;
+    }
+
+    if (pinBase < 64)
+    {
+        fprintf (stderr, "%s: pinBase (%d) too small. Minimum is 64.\n", progName, pinBase) ;
+        return FALSE ;
+    }
+
+    // Search for extensions:
+
+    for (extensionFn = extensionFunctions ; extensionFn->name != NULL ; ++extensionFn)
+    {
+        if (strcmp (extensionFn->name, extension) == 0)
+            return extensionFn->function (progName, pinBase, p) ;
+    }
+
+    fprintf (stderr, "%s: extension %s not found\n", progName, extension) ;
     return FALSE ;
-  }
-
-// Search for extensions:
-
-  for (extensionFn = extensionFunctions ; extensionFn->name != NULL ; ++extensionFn)
-  {
-    if (strcmp (extensionFn->name, extension) == 0)
-      return extensionFn->function (progName, pinBase, p) ;
-  }
-
-  fprintf (stderr, "%s: extension %s not found\n", progName, extension) ;
-  return FALSE ;
 }

@@ -32,32 +32,32 @@
 int main (void)
 {
 
-// Enable the on-goard GPIO
+    // Enable the on-goard GPIO
 
-  wiringPiSetup () ;
+    wiringPiSetup () ;
 
-  printf ("Raspberry Pi - Quick2Wire Mainboard Button & LED Test\n") ;
+    printf ("Raspberry Pi - Quick2Wire Mainboard Button & LED Test\n") ;
 
-  pinMode (BUTTON, INPUT) ;
-  pinMode (LED1, OUTPUT) ;
-  pinMode (LED2, OUTPUT) ;
+    pinMode (BUTTON, INPUT) ;
+    pinMode (LED1, OUTPUT) ;
+    pinMode (LED2, OUTPUT) ;
 
-  digitalWrite (LED1, HIGH) ;		// On-board LED on
-  digitalWrite (LED2, LOW) ;		// 2nd LED off
+    digitalWrite (LED1, HIGH) ;		// On-board LED on
+    digitalWrite (LED2, LOW) ;		// 2nd LED off
 
-  for (;;)
-  {
-    if (digitalRead (BUTTON) == HIGH)	// Swap LED states
+    for (;;)
     {
-      digitalWrite (LED1, LOW) ;
-      digitalWrite (LED2, HIGH) ;
-      while (digitalRead (BUTTON) == HIGH)
-	delay (1) ;
-      digitalWrite (LED1, HIGH) ;
-      digitalWrite (LED2, LOW) ;
+        if (digitalRead (BUTTON) == HIGH)	// Swap LED states
+        {
+            digitalWrite (LED1, LOW) ;
+            digitalWrite (LED2, HIGH) ;
+            while (digitalRead (BUTTON) == HIGH)
+                delay (1) ;
+            digitalWrite (LED1, HIGH) ;
+            digitalWrite (LED2, LOW) ;
+        }
+        delay (1) ;
     }
-    delay (1) ;
-  }
 
-  return 0 ;
+    return 0 ;
 }

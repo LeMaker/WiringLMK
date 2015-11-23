@@ -39,73 +39,73 @@
 
 static void middleA (void)
 {
-  unsigned int next ;
+    unsigned int next ;
 
-  for (;;)
-  {
-    next = micros () + 1136 ;
-    digitalWrite (PIFACE + 0, 0)  ;
-    digitalWrite (PIFACE + 1, 0)  ;
-    while (micros () < next)
-      delayMicroseconds (1) ;
-    
-    next = micros () + 1137 ;
-    digitalWrite (PIFACE + 0, 1)  ;
-    digitalWrite (PIFACE + 1, 1)  ;
-    while (micros () < next)
-      delayMicroseconds (1) ;
-    
-  }
+    for (;;)
+    {
+        next = micros () + 1136 ;
+        digitalWrite (PIFACE + 0, 0)  ;
+        digitalWrite (PIFACE + 1, 0)  ;
+        while (micros () < next)
+            delayMicroseconds (1) ;
+
+        next = micros () + 1137 ;
+        digitalWrite (PIFACE + 0, 1)  ;
+        digitalWrite (PIFACE + 1, 1)  ;
+        while (micros () < next)
+            delayMicroseconds (1) ;
+
+    }
 }
 
 
 int main (int argc, char *argv [])
 {
-  int bpm, msPerBeat, state = 0 ;
-  unsigned int end ;
+    int bpm, msPerBeat, state = 0 ;
+    unsigned int end ;
 
-  printf ("Raspberry Pi PiFace Metronome\n") ;
-  printf ("=============================\n") ;
+    printf ("Raspberry Pi PiFace Metronome\n") ;
+    printf ("=============================\n") ;
 
-  piHiPri (50) ;
+    piHiPri (50) ;
 
-  wiringPiSetupSys () ;	// Needed for timing functions
-  piFaceSetup      (PIFACE) ;
+    wiringPiSetupSys () ;	// Needed for timing functions
+    piFaceSetup      (PIFACE) ;
 
-  if (argc != 2)
-  {
-    printf ("Usage: %s <beates per minute>\n", argv [0]) ;
-    exit (1) ;
-  }
+    if (argc != 2)
+    {
+        printf ("Usage: %s <beates per minute>\n", argv [0]) ;
+        exit (1) ;
+    }
 
-  if (strcmp (argv [1], "a") == 0)
-    middleA () ;
+    if (strcmp (argv [1], "a") == 0)
+        middleA () ;
 
-  bpm = atoi (argv [1]) ;
+    bpm = atoi (argv [1]) ;
 
-  if ((bpm < 40) || (bpm > 208))
-  {
-    printf ("%s range is 40 through 208 beats per minute\n", argv [0]) ;
-    exit (1) ;
-  }
+    if ((bpm < 40) || (bpm > 208))
+    {
+        printf ("%s range is 40 through 208 beats per minute\n", argv [0]) ;
+        exit (1) ;
+    }
 
-  msPerBeat = 60000 / bpm  ;
+    msPerBeat = 60000 / bpm  ;
 
-// Main loop:
-//	Put some random LED pairs up for a few seconds, then blank ...
+    // Main loop:
+    //	Put some random LED pairs up for a few seconds, then blank ...
 
-  for (;;)
-  {
-    end = millis ()  + msPerBeat ;
+    for (;;)
+    {
+        end = millis ()  + msPerBeat ;
 
-    digitalWrite (PIFACE + 0, state)  ;
-    digitalWrite (PIFACE + 1, state)  ;
+        digitalWrite (PIFACE + 0, state)  ;
+        digitalWrite (PIFACE + 1, state)  ;
 
-    while (millis () < end)
-      delayMicroseconds (500) ;
+        while (millis () < end)
+            delayMicroseconds (500) ;
 
-    state ^= 1 ;
-  }
+        state ^= 1 ;
+    }
 
-  return 0 ;
+    return 0 ;
 }

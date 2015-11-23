@@ -1,6 +1,6 @@
 /*
  * wiringShift.h:
- *	Emulate some of the Arduino wiring functionality. 
+ *	Emulate some of the Arduino wiring functionality.
  *
  * Copyright (c) 2009-2012 Gordon Henderson.
  ***********************************************************************

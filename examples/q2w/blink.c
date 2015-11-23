@@ -30,21 +30,21 @@
 int main (void)
 {
 
-// Enable the on-goard GPIO
+    // Enable the on-goard GPIO
 
-  wiringPiSetup () ;
+    wiringPiSetup () ;
 
-  printf ("Raspberry Pi - Quick2Wire Mainboard LED Blink Test\n") ;
+    printf ("Raspberry Pi - Quick2Wire Mainboard LED Blink Test\n") ;
 
-  pinMode (LED, OUTPUT) ;
+    pinMode (LED, OUTPUT) ;
 
-  for (;;)
-  {
-    digitalWrite (LED, HIGH) ;
-    delay (500) ;
-    digitalWrite (LED, LOW) ;
-    delay (500) ;
-  }
+    for (;;)
+    {
+        digitalWrite (LED, HIGH) ;
+        delay (500) ;
+        digitalWrite (LED, LOW) ;
+        delay (500) ;
+    }
 
-  return 0 ;
+    return 0 ;
 }

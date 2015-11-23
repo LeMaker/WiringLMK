@@ -1,6 +1,6 @@
 /*
  * wiringShift.c:
- *	Emulate some of the Arduino wiring functionality. 
+ *	Emulate some of the Arduino wiring functionality.
  *
  * Copyright (c) 2009-2012 Gordon Henderson.
  ***********************************************************************
@@ -35,25 +35,25 @@
 
 uint8_t shiftIn (uint8_t dPin, uint8_t cPin, uint8_t order)
 {
-  uint8_t value = 0 ;
-  int8_t  i ;
- 
-  if (order == MSBFIRST)
-    for (i = 7 ; i >= 0 ; --i)
-    {
-      digitalWrite (cPin, HIGH) ;
-      value |= digitalRead (dPin) << i ;
-      digitalWrite (cPin, LOW) ;
-    }
-  else
-    for (i = 0 ; i < 8 ; ++i)
-    {
-      digitalWrite (cPin, HIGH) ;
-      value |= digitalRead (dPin) << i ;
-      digitalWrite (cPin, LOW) ;
-    }
+    uint8_t value = 0 ;
+    int8_t  i ;
 
-  return value;
+    if (order == MSBFIRST)
+        for (i = 7 ; i >= 0 ; --i)
+        {
+            digitalWrite (cPin, HIGH) ;
+            value |= digitalRead (dPin) << i ;
+            digitalWrite (cPin, LOW) ;
+        }
+    else
+        for (i = 0 ; i < 8 ; ++i)
+        {
+            digitalWrite (cPin, HIGH) ;
+            value |= digitalRead (dPin) << i ;
+            digitalWrite (cPin, LOW) ;
+        }
+
+    return value;
 }
 
 /*
@@ -64,20 +64,20 @@ uint8_t shiftIn (uint8_t dPin, uint8_t cPin, uint8_t order)
 
 void shiftOut (uint8_t dPin, uint8_t cPin, uint8_t order, uint8_t val)
 {
-  int8_t i;
+    int8_t i;
 
-  if (order == MSBFIRST)
-    for (i = 7 ; i >= 0 ; --i)
-    {
-      digitalWrite (dPin, val & (1 << i)) ;
-      digitalWrite (cPin, HIGH) ;
-      digitalWrite (cPin, LOW) ;
-    }
-  else
-    for (i = 0 ; i < 8 ; ++i)
-    {
-      digitalWrite (dPin, val & (1 << i)) ;
-      digitalWrite (cPin, HIGH) ;
-      digitalWrite (cPin, LOW) ;
-    }
+    if (order == MSBFIRST)
+        for (i = 7 ; i >= 0 ; --i)
+        {
+            digitalWrite (dPin, val & (1 << i)) ;
+            digitalWrite (cPin, HIGH) ;
+            digitalWrite (cPin, LOW) ;
+        }
+    else
+        for (i = 0 ; i < 8 ; ++i)
+        {
+            digitalWrite (dPin, val & (1 << i)) ;
+            digitalWrite (cPin, HIGH) ;
+            digitalWrite (cPin, LOW) ;
+        }
 }

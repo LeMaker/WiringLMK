@@ -35,22 +35,22 @@
 
 static void myAnalogWrite (struct wiringPiNodeStruct *node, int pin, int value)
 {
-  unsigned char spiData [2] ;
-  unsigned char chanBits, dataBits ;
-  int chan = pin - node->pinBase ;
+    unsigned char spiData [2] ;
+    unsigned char chanBits, dataBits ;
+    int chan = pin - node->pinBase ;
 
-  if (chan == 0)
-    chanBits = 0x30 ;
-  else
-    chanBits = 0xB0 ;
+    if (chan == 0)
+        chanBits = 0x30 ;
+    else
+        chanBits = 0xB0 ;
 
-  chanBits |= ((value >> 4) & 0x0F) ;
-  dataBits  = ((value << 4) & 0xF0) ;
+    chanBits |= ((value >> 4) & 0x0F) ;
+    dataBits  = ((value << 4) & 0xF0) ;
 
-  spiData [0] = chanBits ;
-  spiData [1] = dataBits ;
+    spiData [0] = chanBits ;
+    spiData [1] = dataBits ;
 
-  wiringPiSPIDataRW (node->fd, spiData, 2) ;
+    wiringPiSPIDataRW (node->fd, spiData, 2) ;
 }
 
 /*
@@ -62,15 +62,15 @@ static void myAnalogWrite (struct wiringPiNodeStruct *node, int pin, int value)
 
 int mcp4802Setup (const int pinBase, int spiChannel)
 {
-  struct wiringPiNodeStruct *node ;
+    struct wiringPiNodeStruct *node ;
 
-  if (wiringPiSPISetup (spiChannel, 1000000) < 0)
-    return -1 ;
+    if (wiringPiSPISetup (spiChannel, 1000000) < 0)
+        return -1 ;
 
-  node = wiringPiNewNode (pinBase, 2) ;
+    node = wiringPiNewNode (pinBase, 2) ;
 
-  node->fd          = spiChannel ;
-  node->analogWrite = myAnalogWrite ;
+    node->fd          = spiChannel ;
+    node->analogWrite = myAnalogWrite ;
 
-  return 0 ;
+    return 0 ;
 }

@@ -70,8 +70,10 @@ static int lcdOrientation = 0 ;
 
 static void strobe (void)
 {
-  digitalWrite (STROBE, 1) ; delayMicroseconds (1) ;
-  digitalWrite (STROBE, 0) ; delayMicroseconds (5) ;
+    digitalWrite (STROBE, 1) ;
+    delayMicroseconds (1) ;
+    digitalWrite (STROBE, 0) ;
+    delayMicroseconds (5) ;
 }
 
 
@@ -83,10 +85,10 @@ static void strobe (void)
 
 static void sendData (const int data, const int chip)
 {
-  digitalWrite     (chip, 0) ;
-  digitalWriteByte (data) ;
-  strobe           () ;
-  digitalWrite     (chip, 1) ;
+    digitalWrite     (chip, 0) ;
+    digitalWriteByte (data) ;
+    strobe           () ;
+    digitalWrite     (chip, 1) ;
 }
 
 
@@ -98,9 +100,9 @@ static void sendData (const int data, const int chip)
 
 static void sendCommand (const int command, const int chip)
 {
-  digitalWrite (RS, 0) ;
-  sendData     (command, chip) ;
-  digitalWrite (RS, 1) ;
+    digitalWrite (RS, 0) ;
+    sendData     (command, chip) ;
+    digitalWrite (RS, 1) ;
 }
 
 
@@ -111,10 +113,14 @@ static void sendCommand (const int command, const int chip)
  */
 
 static void setCol  (int col, const int chip)
-  { sendCommand (0x40 | (col  & 0x3F), chip) ; }
+{
+    sendCommand (0x40 | (col  & 0x3F), chip) ;
+}
 
 static void setLine (int line, const int chip)
-  { sendCommand (0xB8 | (line & 0x07), chip) ; }
+{
+    sendCommand (0xB8 | (line & 0x07), chip) ;
+}
 
 
 /*
@@ -125,48 +131,48 @@ static void setLine (int line, const int chip)
 
 void lcd128x64update (void)
 {
-  int line, x, y, fbLoc ;
-  unsigned char byte ;
+    int line, x, y, fbLoc ;
+    unsigned char byte ;
 
-// Left side 
+    // Left side
 
-  for (line = 0 ; line < 8 ; ++line)
-  {
-    setCol  (0,    CS1) ;
-    setLine (line, CS1) ;
-
-    for (x = 63 ; x >= 0 ; --x)
+    for (line = 0 ; line < 8 ; ++line)
     {
-      byte = 0 ;
-      for (y = 0 ; y < 8 ; ++y)
-      {
-	fbLoc = x + (((7 - line) * 8) + (7 - y)) * LCD_WIDTH ;
-	if (frameBuffer [fbLoc] != 0)
-	  byte |= (1 << y) ;
-      }
-      sendData (byte, CS1) ;
+        setCol  (0,    CS1) ;
+        setLine (line, CS1) ;
+
+        for (x = 63 ; x >= 0 ; --x)
+        {
+            byte = 0 ;
+            for (y = 0 ; y < 8 ; ++y)
+            {
+                fbLoc = x + (((7 - line) * 8) + (7 - y)) * LCD_WIDTH ;
+                if (frameBuffer [fbLoc] != 0)
+                    byte |= (1 << y) ;
+            }
+            sendData (byte, CS1) ;
+        }
     }
-  }
 
-// Right side 
+    // Right side
 
-  for (line = 0 ; line < 8 ; ++line)
-  {
-    setCol  (0,    CS2) ;
-    setLine (line, CS2) ;
-
-    for (x = 127 ; x >= 64 ; --x)
+    for (line = 0 ; line < 8 ; ++line)
     {
-      byte = 0 ;
-      for (y = 0 ; y < 8 ; ++y)
-      {
-	fbLoc = x + (((7 - line) * 8) + (7 - y)) * LCD_WIDTH ;
-	if (frameBuffer [fbLoc] != 0)
-	  byte |= (1 << y) ;
-      }
-      sendData (byte, CS2) ;
+        setCol  (0,    CS2) ;
+        setLine (line, CS2) ;
+
+        for (x = 127 ; x >= 64 ; --x)
+        {
+            byte = 0 ;
+            for (y = 0 ; y < 8 ; ++y)
+            {
+                fbLoc = x + (((7 - line) * 8) + (7 - y)) * LCD_WIDTH ;
+                if (frameBuffer [fbLoc] != 0)
+                    byte |= (1 << y) ;
+            }
+            sendData (byte, CS2) ;
+        }
     }
-  }
 }
 
 
@@ -178,8 +184,8 @@ void lcd128x64update (void)
 
 void lcd128x64setOrigin (int x, int y)
 {
-  xOrigin = x ;
-  yOrigin = y ;
+    xOrigin = x ;
+    yOrigin = y ;
 }
 
 
@@ -195,32 +201,32 @@ void lcd128x64setOrigin (int x, int y)
 
 void lcd128x64setOrientation (int orientation)
 {
-  lcdOrientation = orientation & 3 ;
+    lcdOrientation = orientation & 3 ;
 
-  lcd128x64setOrigin (0,0) ;
+    lcd128x64setOrigin (0, 0) ;
 
-  switch (lcdOrientation)
-  {
+    switch (lcdOrientation)
+    {
     case 0:
-      maxX = LCD_WIDTH ;
-      maxY = LCD_HEIGHT ;
-      break ;
+        maxX = LCD_WIDTH ;
+        maxY = LCD_HEIGHT ;
+        break ;
 
     case 1:
-      maxX = LCD_HEIGHT ;
-      maxY = LCD_WIDTH ;
-      break ;
+        maxX = LCD_HEIGHT ;
+        maxY = LCD_WIDTH ;
+        break ;
 
     case 2:
-      maxX = LCD_WIDTH ;
-      maxY = LCD_HEIGHT ;
-      break ;
+        maxX = LCD_WIDTH ;
+        maxY = LCD_HEIGHT ;
+        break ;
 
     case 3:
-      maxX = LCD_HEIGHT ;
-      maxY = LCD_WIDTH ;
-      break ;
-  }
+        maxX = LCD_HEIGHT ;
+        maxY = LCD_WIDTH ;
+        break ;
+    }
 }
 
 
@@ -232,49 +238,49 @@ void lcd128x64setOrientation (int orientation)
 
 void lcd128x64orientCoordinates (int *x, int *y)
 {
-  register int tmp ;
+    register int tmp ;
 
-  *x += xOrigin ;
-  *y += yOrigin ;
-  *y  = maxY - *y - 1 ;
+    *x += xOrigin ;
+    *y += yOrigin ;
+    *y  = maxY - *y - 1 ;
 
-  switch (lcdOrientation)
-  {
+    switch (lcdOrientation)
+    {
     case 0:
-      break;
+        break;
 
     case 1:
-      tmp = maxY - *y - 1 ;
-      *y = *x ;
-      *x = tmp ;
-      break;
+        tmp = maxY - *y - 1 ;
+        *y = *x ;
+        *x = tmp ;
+        break;
 
     case 2:
-      *x = maxX - *x - 1 ;
-      *y = maxY - *y - 1 ;
-      break;
+        *x = maxX - *x - 1 ;
+        *y = maxY - *y - 1 ;
+        break;
 
     case 3:
-      *x = maxX - *x - 1 ;
-      tmp = *y ;
-      *y = *x ;
-      *x = tmp ;
-      break ;
-  }
+        *x = maxX - *x - 1 ;
+        tmp = *y ;
+        *y = *x ;
+        *x = tmp ;
+        break ;
+    }
 }
 
 
 /*
  * lcd128x64getScreenSize:
- *	Return the max X & Y screen sizes. Needs to be called again, if you 
+ *	Return the max X & Y screen sizes. Needs to be called again, if you
  *	change screen orientation.
  *********************************************************************************
  */
 
 void lcd128x64getScreenSize (int *x, int *y)
 {
-  *x = maxX ;
-  *y = maxY ;
+    *x = maxX ;
+    *y = maxY ;
 }
 
 
@@ -293,15 +299,15 @@ void lcd128x64getScreenSize (int *x, int *y)
 
 void lcd128x64point (int x, int y, int colour)
 {
-  lastX = x ;
-  lastY = y ;
+    lastX = x ;
+    lastY = y ;
 
-  lcd128x64orientCoordinates (&x, &y) ;
+    lcd128x64orientCoordinates (&x, &y) ;
 
-  if ((x < 0) || (x >= LCD_WIDTH) || (y < 0) || (y >= LCD_HEIGHT))
-    return ;
+    if ((x < 0) || (x >= LCD_WIDTH) || (y < 0) || (y >= LCD_HEIGHT))
+        return ;
 
-  frameBuffer [x + y * LCD_WIDTH] = colour ;
+    frameBuffer [x + y * LCD_WIDTH] = colour ;
 }
 
 
@@ -313,48 +319,48 @@ void lcd128x64point (int x, int y, int colour)
 
 void lcd128x64line (int x0, int y0, int x1, int y1, int colour)
 {
-  int dx, dy ;
-  int sx, sy ;
-  int err, e2 ;
+    int dx, dy ;
+    int sx, sy ;
+    int err, e2 ;
 
-  lastX = x1 ;
-  lastY = y1 ;
+    lastX = x1 ;
+    lastY = y1 ;
 
-  dx = abs (x1 - x0) ;
-  dy = abs (y1 - y0) ;
+    dx = abs (x1 - x0) ;
+    dy = abs (y1 - y0) ;
 
-  sx = (x0 < x1) ? 1 : -1 ;
-  sy = (y0 < y1) ? 1 : -1 ;
+    sx = (x0 < x1) ? 1 : -1 ;
+    sy = (y0 < y1) ? 1 : -1 ;
 
-  err = dx - dy ;
- 
-  for (;;)
-  {
-    lcd128x64point (x0, y0, colour) ;
+    err = dx - dy ;
 
-    if ((x0 == x1) && (y0 == y1))
-      break ;
-
-    e2 = 2 * err ;
-
-    if (e2 > -dy)
+    for (;;)
     {
-      err -= dy ;
-      x0  += sx ;
-    }
+        lcd128x64point (x0, y0, colour) ;
 
-    if (e2 < dx)
-    {
-      err += dx ;
-      y0  += sy ;
+        if ((x0 == x1) && (y0 == y1))
+            break ;
+
+        e2 = 2 * err ;
+
+        if (e2 > -dy)
+        {
+            err -= dy ;
+            x0  += sx ;
+        }
+
+        if (e2 < dx)
+        {
+            err += dx ;
+            y0  += sy ;
+        }
     }
-  }
 
 }
 
 void lcd128x64lineTo (int x, int y, int colour)
 {
-  lcd128x64line (lastX, lastY, x, y, colour) ;
+    lcd128x64line (lastX, lastY, x, y, colour) ;
 }
 
 
@@ -366,26 +372,26 @@ void lcd128x64lineTo (int x, int y, int colour)
 
 void lcd128x64rectangle (int x1, int y1, int x2, int y2, int colour, int filled)
 {
-  register int x ;
+    register int x ;
 
-  if (filled)
-  {
-    /**/ if (x1 == x2)
-      lcd128x64line (x1, y1, x2, y2, colour) ;
-    else if (x1 < x2)
-      for (x = x1 ; x <= x2 ; ++x)
-	lcd128x64line (x, y1, x, y2, colour) ;
+    if (filled)
+    {
+        /**/ if (x1 == x2)
+            lcd128x64line (x1, y1, x2, y2, colour) ;
+        else if (x1 < x2)
+            for (x = x1 ; x <= x2 ; ++x)
+                lcd128x64line (x, y1, x, y2, colour) ;
+        else
+            for (x = x2 ; x <= x1 ; ++x)
+                lcd128x64line (x, y1, x, y2, colour) ;
+    }
     else
-      for (x = x2 ; x <= x1 ; ++x)
-	lcd128x64line (x, y1, x, y2, colour) ;
-  }
-  else
-  {
-    lcd128x64line   (x1, y1, x2, y1, colour) ;
-    lcd128x64lineTo (x2, y2, colour) ;
-    lcd128x64lineTo (x1, y2, colour) ;
-    lcd128x64lineTo (x1, y1, colour) ;
-  }
+    {
+        lcd128x64line   (x1, y1, x2, y1, colour) ;
+        lcd128x64lineTo (x2, y2, colour) ;
+        lcd128x64lineTo (x1, y2, colour) ;
+        lcd128x64lineTo (x1, y1, colour) ;
+    }
 }
 
 
@@ -397,58 +403,62 @@ void lcd128x64rectangle (int x1, int y1, int x2, int y2, int colour, int filled)
 
 void lcd128x64circle (int x, int y, int r, int colour, int filled)
 {
-  int ddF_x = 1 ;
-  int ddF_y = -2 * r ;
+    int ddF_x = 1 ;
+    int ddF_y = -2 * r ;
 
-  int f = 1 - r ;
-  int x1 = 0 ;
-  int y1 = r ;
+    int f = 1 - r ;
+    int x1 = 0 ;
+    int y1 = r ;
 
-  if (filled)
-  {
-    lcd128x64line (x, y + r, x, y - r, colour) ;
-    lcd128x64line (x + r, y, x - r, y, colour) ;
-  }
-  else
-  {
-    lcd128x64point (x, y + r, colour) ;
-    lcd128x64point (x, y - r, colour) ;
-    lcd128x64point (x + r, y, colour) ;
-    lcd128x64point (x - r, y, colour) ;
-  }
-
-  while (x1 < y1)
-  {
-    if (f >= 0)
-    {
-      y1-- ;
-      ddF_y += 2 ;
-      f += ddF_y ;
-    }
-    x1++ ;
-    ddF_x += 2 ;
-    f += ddF_x ;
     if (filled)
     {
-      lcd128x64line (x + x1, y + y1, x - x1, y + y1, colour) ;
-      lcd128x64line (x + x1, y - y1, x - x1, y - y1, colour) ;
-      lcd128x64line (x + y1, y + x1, x - y1, y + x1, colour) ;
-      lcd128x64line (x + y1, y - x1, x - y1, y - x1, colour) ;
+        lcd128x64line (x, y + r, x, y - r, colour) ;
+        lcd128x64line (x + r, y, x - r, y, colour) ;
     }
     else
     {
-      lcd128x64point (x + x1, y + y1, colour) ; lcd128x64point (x - x1, y + y1, colour) ;
-      lcd128x64point (x + x1, y - y1, colour) ; lcd128x64point (x - x1, y - y1, colour) ;
-      lcd128x64point (x + y1, y + x1, colour) ; lcd128x64point (x - y1, y + x1, colour) ;
-      lcd128x64point (x + y1, y - x1, colour) ; lcd128x64point (x - y1, y - x1, colour) ;
+        lcd128x64point (x, y + r, colour) ;
+        lcd128x64point (x, y - r, colour) ;
+        lcd128x64point (x + r, y, colour) ;
+        lcd128x64point (x - r, y, colour) ;
     }
-  }
+
+    while (x1 < y1)
+    {
+        if (f >= 0)
+        {
+            y1-- ;
+            ddF_y += 2 ;
+            f += ddF_y ;
+        }
+        x1++ ;
+        ddF_x += 2 ;
+        f += ddF_x ;
+        if (filled)
+        {
+            lcd128x64line (x + x1, y + y1, x - x1, y + y1, colour) ;
+            lcd128x64line (x + x1, y - y1, x - x1, y - y1, colour) ;
+            lcd128x64line (x + y1, y + x1, x - y1, y + x1, colour) ;
+            lcd128x64line (x + y1, y - x1, x - y1, y - x1, colour) ;
+        }
+        else
+        {
+            lcd128x64point (x + x1, y + y1, colour) ;
+            lcd128x64point (x - x1, y + y1, colour) ;
+            lcd128x64point (x + x1, y - y1, colour) ;
+            lcd128x64point (x - x1, y - y1, colour) ;
+            lcd128x64point (x + y1, y + x1, colour) ;
+            lcd128x64point (x - y1, y + x1, colour) ;
+            lcd128x64point (x + y1, y - x1, colour) ;
+            lcd128x64point (x - y1, y - x1, colour) ;
+        }
+    }
 }
 
 
 /*
  * lcd128x64ellipse:
- *	Fast ellipse drawing algorithm by 
+ *	Fast ellipse drawing algorithm by
  *      John Kennedy
  *	Mathematics Department
  *	Santa Monica College
@@ -461,83 +471,83 @@ void lcd128x64circle (int x, int y, int r, int colour, int filled)
 
 static void plot4ellipsePoints (int cx, int cy, int x, int y, int colour, int filled)
 {
-  if (filled)
-  {
-    lcd128x64line (cx + x, cy + y, cx - x, cy + y, colour) ;
-    lcd128x64line (cx - x, cy - y, cx + x, cy - y, colour) ;
-  }
-  else
-  {
-    lcd128x64point (cx + x, cy + y, colour) ;
-    lcd128x64point (cx - x, cy + y, colour) ;
-    lcd128x64point (cx - x, cy - y, colour) ;
-    lcd128x64point (cx + x, cy - y, colour) ;
-  }
+    if (filled)
+    {
+        lcd128x64line (cx + x, cy + y, cx - x, cy + y, colour) ;
+        lcd128x64line (cx - x, cy - y, cx + x, cy - y, colour) ;
+    }
+    else
+    {
+        lcd128x64point (cx + x, cy + y, colour) ;
+        lcd128x64point (cx - x, cy + y, colour) ;
+        lcd128x64point (cx - x, cy - y, colour) ;
+        lcd128x64point (cx + x, cy - y, colour) ;
+    }
 }
 
 void lcd128x64ellipse (int cx, int cy, int xRadius, int yRadius, int colour, int filled)
 {
-  int x, y ;
-  int xChange, yChange, ellipseError ;
-  int twoAsquare, twoBsquare ;
-  int stoppingX, stoppingY ;
+    int x, y ;
+    int xChange, yChange, ellipseError ;
+    int twoAsquare, twoBsquare ;
+    int stoppingX, stoppingY ;
 
-  twoAsquare = 2 * xRadius * xRadius ;
-  twoBsquare = 2 * yRadius * yRadius ;
+    twoAsquare = 2 * xRadius * xRadius ;
+    twoBsquare = 2 * yRadius * yRadius ;
 
-  x = xRadius ;
-  y = 0 ;
+    x = xRadius ;
+    y = 0 ;
 
-  xChange = yRadius * yRadius * (1 - 2 * xRadius) ;
-  yChange = xRadius * xRadius ;
+    xChange = yRadius * yRadius * (1 - 2 * xRadius) ;
+    yChange = xRadius * xRadius ;
 
-  ellipseError = 0 ;
-  stoppingX    = twoBsquare * xRadius ;
-  stoppingY    = 0 ;
+    ellipseError = 0 ;
+    stoppingX    = twoBsquare * xRadius ;
+    stoppingY    = 0 ;
 
-  while (stoppingX >= stoppingY)	// 1st set of points
-  {
-    plot4ellipsePoints (cx, cy, x, y, colour, filled) ;
-    ++y ;
-    stoppingY    += twoAsquare ;
-    ellipseError += yChange ;
-    yChange      += twoAsquare ;
-
-    if ((2 * ellipseError + xChange) > 0 )
+    while (stoppingX >= stoppingY)	// 1st set of points
     {
-      --x ;
-      stoppingX    -= twoBsquare ;
-      ellipseError += xChange ;
-      xChange      += twoBsquare ;
+        plot4ellipsePoints (cx, cy, x, y, colour, filled) ;
+        ++y ;
+        stoppingY    += twoAsquare ;
+        ellipseError += yChange ;
+        yChange      += twoAsquare ;
+
+        if ((2 * ellipseError + xChange) > 0 )
+        {
+            --x ;
+            stoppingX    -= twoBsquare ;
+            ellipseError += xChange ;
+            xChange      += twoBsquare ;
+        }
     }
-  }
 
-  x = 0 ;
-  y = yRadius ;
+    x = 0 ;
+    y = yRadius ;
 
-  xChange = yRadius * yRadius ;
-  yChange = xRadius * xRadius * (1 - 2 * yRadius) ;
+    xChange = yRadius * yRadius ;
+    yChange = xRadius * xRadius * (1 - 2 * yRadius) ;
 
-  ellipseError = 0 ;
-  stoppingX    = 0 ;
-  stoppingY    = twoAsquare * yRadius ;
+    ellipseError = 0 ;
+    stoppingX    = 0 ;
+    stoppingY    = twoAsquare * yRadius ;
 
-  while (stoppingX <= stoppingY)	//2nd set of points
-  {
-    plot4ellipsePoints (cx, cy, x, y, colour, filled) ;
-    ++x ;
-    stoppingX    += twoBsquare ;
-    ellipseError += xChange ;
-    xChange      += twoBsquare ;
-
-    if ((2 * ellipseError + yChange) > 0 )
+    while (stoppingX <= stoppingY)	//2nd set of points
     {
-      --y ;
-      stoppingY -= twoAsquare ;
-      ellipseError += yChange ;
-      yChange += twoAsquare ;
+        plot4ellipsePoints (cx, cy, x, y, colour, filled) ;
+        ++x ;
+        stoppingX    += twoBsquare ;
+        ellipseError += xChange ;
+        xChange      += twoBsquare ;
+
+        if ((2 * ellipseError + yChange) > 0 )
+        {
+            --y ;
+            stoppingY -= twoAsquare ;
+            ellipseError += yChange ;
+            yChange += twoAsquare ;
+        }
     }
-  }
 }
 
 
@@ -549,31 +559,31 @@ void lcd128x64ellipse (int cx, int cy, int xRadius, int yRadius, int colour, int
 
 void lcd128x64putchar (int x, int y, int c, int bgCol, int fgCol)
 {
-  int y1, y2 ;
+    int y1, y2 ;
 
-  unsigned char line ;
-  unsigned char *fontPtr ;
+    unsigned char line ;
+    unsigned char *fontPtr ;
 
-// Can't print if we're offscreen
+    // Can't print if we're offscreen
 
-//if ((x < 0) || (x >= (maxX - fontWidth)) || (y < 0) || (y >= (maxY - fontHeight)))
-//  return ;
+    //if ((x < 0) || (x >= (maxX - fontWidth)) || (y < 0) || (y >= (maxY - fontHeight)))
+    //  return ;
 
-  fontPtr = font + c * fontHeight ;
+    fontPtr = font + c * fontHeight ;
 
-  for (y1 = fontHeight - 1 ; y1 >= 0 ; --y1)
-  {
-    y2 = y + y1 ;
-    line = *fontPtr++ ;
-    lcd128x64point (x + 0, y2, (line & 0x80) == 0 ? bgCol : fgCol) ;
-    lcd128x64point (x + 1, y2, (line & 0x40) == 0 ? bgCol : fgCol) ;
-    lcd128x64point (x + 2, y2, (line & 0x20) == 0 ? bgCol : fgCol) ;
-    lcd128x64point (x + 3, y2, (line & 0x10) == 0 ? bgCol : fgCol) ;
-    lcd128x64point (x + 4, y2, (line & 0x08) == 0 ? bgCol : fgCol) ;
-    lcd128x64point (x + 5, y2, (line & 0x04) == 0 ? bgCol : fgCol) ;
-    lcd128x64point (x + 6, y2, (line & 0x02) == 0 ? bgCol : fgCol) ;
-    lcd128x64point (x + 7, y2, (line & 0x01) == 0 ? bgCol : fgCol) ;
-  }
+    for (y1 = fontHeight - 1 ; y1 >= 0 ; --y1)
+    {
+        y2 = y + y1 ;
+        line = *fontPtr++ ;
+        lcd128x64point (x + 0, y2, (line & 0x80) == 0 ? bgCol : fgCol) ;
+        lcd128x64point (x + 1, y2, (line & 0x40) == 0 ? bgCol : fgCol) ;
+        lcd128x64point (x + 2, y2, (line & 0x20) == 0 ? bgCol : fgCol) ;
+        lcd128x64point (x + 3, y2, (line & 0x10) == 0 ? bgCol : fgCol) ;
+        lcd128x64point (x + 4, y2, (line & 0x08) == 0 ? bgCol : fgCol) ;
+        lcd128x64point (x + 5, y2, (line & 0x04) == 0 ? bgCol : fgCol) ;
+        lcd128x64point (x + 6, y2, (line & 0x02) == 0 ? bgCol : fgCol) ;
+        lcd128x64point (x + 7, y2, (line & 0x01) == 0 ? bgCol : fgCol) ;
+    }
 }
 
 
@@ -585,36 +595,37 @@ void lcd128x64putchar (int x, int y, int c, int bgCol, int fgCol)
 
 void lcd128x64puts (int x, int y, const char *str, int bgCol, int fgCol)
 {
-  int c, mx, my ;
+    int c, mx, my ;
 
-  mx = x ; my = y ;
+    mx = x ;
+    my = y ;
 
-  while (*str)
-  {
-    c = *str++ ;
-
-    if (c == '\r')
+    while (*str)
     {
-      mx = x ;
-      continue ;
-    }
+        c = *str++ ;
 
-    if (c == '\n')
-    {
-      mx  = x ;
-      my -= fontHeight ;
-      continue ;
-    }
+        if (c == '\r')
+        {
+            mx = x ;
+            continue ;
+        }
 
-    lcd128x64putchar (mx, my, c, bgCol, fgCol) ;
+        if (c == '\n')
+        {
+            mx  = x ;
+            my -= fontHeight ;
+            continue ;
+        }
 
-    mx += fontWidth ;
-    if (mx >= (maxX - fontWidth))
-    {
-      mx  = 0 ;
-      my -= fontHeight ;
+        lcd128x64putchar (mx, my, c, bgCol, fgCol) ;
+
+        mx += fontWidth ;
+        if (mx >= (maxX - fontWidth))
+        {
+            mx  = 0 ;
+            my -= fontHeight ;
+        }
     }
-  }
 }
 
 
@@ -626,11 +637,11 @@ void lcd128x64puts (int x, int y, const char *str, int bgCol, int fgCol)
 
 void lcd128x64clear (int colour)
 {
-  register int i ;
-  register unsigned char *ptr = frameBuffer ;
+    register int i ;
+    register unsigned char *ptr = frameBuffer ;
 
-  for (i = 0 ; i < (maxX * maxY) ; ++i)
-    *ptr++ = colour ;
+    for (i = 0 ; i < (maxX * maxY) ; ++i)
+        *ptr++ = colour ;
 }
 
 
@@ -644,30 +655,30 @@ void lcd128x64clear (int colour)
 
 int lcd128x64setup (void)
 {
-  int i ;
+    int i ;
 
-  for (i = 0 ; i < 8 ; ++i)
-    pinMode (i, OUTPUT) ;
+    for (i = 0 ; i < 8 ; ++i)
+        pinMode (i, OUTPUT) ;
 
-  digitalWrite (CS1,    1) ;
-  digitalWrite (CS2,    1) ;
-  digitalWrite (STROBE, 0) ;
-  digitalWrite (RS,     1) ;
+    digitalWrite (CS1,    1) ;
+    digitalWrite (CS2,    1) ;
+    digitalWrite (STROBE, 0) ;
+    digitalWrite (RS,     1) ;
 
-  pinMode (CS1,    OUTPUT) ;
-  pinMode (CS2,    OUTPUT) ;
-  pinMode (STROBE, OUTPUT) ;
-  pinMode (RS,     OUTPUT) ;
+    pinMode (CS1,    OUTPUT) ;
+    pinMode (CS2,    OUTPUT) ;
+    pinMode (STROBE, OUTPUT) ;
+    pinMode (RS,     OUTPUT) ;
 
-  sendCommand (0x3F, CS1) ;	// Display ON
-  sendCommand (0xC0, CS1) ;	// Set display start line to 0
+    sendCommand (0x3F, CS1) ;	// Display ON
+    sendCommand (0xC0, CS1) ;	// Set display start line to 0
 
-  sendCommand (0x3F, CS2) ;	// Display ON
-  sendCommand (0xC0, CS2) ;	// Set display start line to 0
+    sendCommand (0x3F, CS2) ;	// Display ON
+    sendCommand (0xC0, CS2) ;	// Set display start line to 0
 
-  lcd128x64clear          (0) ;
-  lcd128x64setOrientation (0) ;
-  lcd128x64update         () ;
+    lcd128x64clear          (0) ;
+    lcd128x64setOrientation (0) ;
+    lcd128x64update         () ;
 
-  return 0 ;
+    return 0 ;
 }

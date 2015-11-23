@@ -36,19 +36,19 @@ int scale [8] = { 262, 294, 330, 349, 392, 440, 494, 525 } ;
 
 int main ()
 {
-  int i ;
+    int i ;
 
-  wiringPiSetup () ;
+    wiringPiSetup () ;
 
-  softToneCreate (PIN) ;
+    softToneCreate (PIN) ;
 
-  for (;;)
-  {
-    for (i = 0 ; i < 8 ; ++i)
+    for (;;)
     {
-      printf ("%3d\n", i) ;
-      softToneWrite (PIN, scale [i]) ;
-      delay (500) ;
+        for (i = 0 ; i < 8 ; ++i)
+        {
+            printf ("%3d\n", i) ;
+            softToneWrite (PIN, scale [i]) ;
+            delay (500) ;
+        }
     }
-  }
 }

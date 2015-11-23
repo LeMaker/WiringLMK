@@ -43,43 +43,79 @@
 
 int serialOpen (const char *device, const int baud)
 {
-  struct termios options ;
-  speed_t myBaud ;
-  int     status, fd ;
+    struct termios options ;
+    speed_t myBaud ;
+    int     status, fd ;
 
-  switch (baud)
-  {
-    case     50:	myBaud =     B50 ; break ;
-    case     75:	myBaud =     B75 ; break ;
-    case    110:	myBaud =    B110 ; break ;
-    case    134:	myBaud =    B134 ; break ;
-    case    150:	myBaud =    B150 ; break ;
-    case    200:	myBaud =    B200 ; break ;
-    case    300:	myBaud =    B300 ; break ;
-    case    600:	myBaud =    B600 ; break ;
-    case   1200:	myBaud =   B1200 ; break ;
-    case   1800:	myBaud =   B1800 ; break ;
-    case   2400:	myBaud =   B2400 ; break ;
-    case   4800:	myBaud =   B4800 ; break ;
-    case   9600:	myBaud =   B9600 ; break ;
-    case  19200:	myBaud =  B19200 ; break ;
-    case  38400:	myBaud =  B38400 ; break ;
-    case  57600:	myBaud =  B57600 ; break ;
-    case 115200:	myBaud = B115200 ; break ;
-    case 230400:	myBaud = B230400 ; break ;
+    switch (baud)
+    {
+    case     50:
+        myBaud =     B50 ;
+        break ;
+    case     75:
+        myBaud =     B75 ;
+        break ;
+    case    110:
+        myBaud =    B110 ;
+        break ;
+    case    134:
+        myBaud =    B134 ;
+        break ;
+    case    150:
+        myBaud =    B150 ;
+        break ;
+    case    200:
+        myBaud =    B200 ;
+        break ;
+    case    300:
+        myBaud =    B300 ;
+        break ;
+    case    600:
+        myBaud =    B600 ;
+        break ;
+    case   1200:
+        myBaud =   B1200 ;
+        break ;
+    case   1800:
+        myBaud =   B1800 ;
+        break ;
+    case   2400:
+        myBaud =   B2400 ;
+        break ;
+    case   4800:
+        myBaud =   B4800 ;
+        break ;
+    case   9600:
+        myBaud =   B9600 ;
+        break ;
+    case  19200:
+        myBaud =  B19200 ;
+        break ;
+    case  38400:
+        myBaud =  B38400 ;
+        break ;
+    case  57600:
+        myBaud =  B57600 ;
+        break ;
+    case 115200:
+        myBaud = B115200 ;
+        break ;
+    case 230400:
+        myBaud = B230400 ;
+        break ;
 
     default:
-      return -2 ;
-  }
+        return -2 ;
+    }
 
-  if ((fd = open (device, O_RDWR | O_NOCTTY | O_NDELAY | O_NONBLOCK)) == -1)
-    return -1 ;
+    if ((fd = open (device, O_RDWR | O_NOCTTY | O_NDELAY | O_NONBLOCK)) == -1)
+        return -1 ;
 
-  fcntl (fd, F_SETFL, O_RDWR) ;
+    fcntl (fd, F_SETFL, O_RDWR) ;
 
-// Get and modify current options:
+    // Get and modify current options:
 
-  tcgetattr (fd, &options) ;
+    tcgetattr (fd, &options) ;
 
     cfmakeraw   (&options) ;
     cfsetispeed (&options, myBaud) ;
@@ -96,18 +132,18 @@ int serialOpen (const char *device, const int baud)
     options.c_cc [VMIN]  =   0 ;
     options.c_cc [VTIME] = 100 ;	// Ten seconds (100 deciseconds)
 
-  tcsetattr (fd, TCSANOW | TCSAFLUSH, &options) ;
+    tcsetattr (fd, TCSANOW | TCSAFLUSH, &options) ;
 
-  ioctl (fd, TIOCMGET, &status);
+    ioctl (fd, TIOCMGET, &status);
 
-  status |= TIOCM_DTR ;
-  status |= TIOCM_RTS ;
+    status |= TIOCM_DTR ;
+    status |= TIOCM_RTS ;
 
-  ioctl (fd, TIOCMSET, &status);
+    ioctl (fd, TIOCMSET, &status);
 
-  usleep (10000) ;	// 10mS
+    usleep (10000) ;	// 10mS
 
-  return fd ;
+    return fd ;
 }
 
 
@@ -119,7 +155,7 @@ int serialOpen (const char *device, const int baud)
 
 void serialFlush (const int fd)
 {
-  tcflush (fd, TCIOFLUSH) ;
+    tcflush (fd, TCIOFLUSH) ;
 }
 
 
@@ -131,7 +167,7 @@ void serialFlush (const int fd)
 
 void serialClose (const int fd)
 {
-  close (fd) ;
+    close (fd) ;
 }
 
 
@@ -143,7 +179,7 @@ void serialClose (const int fd)
 
 void serialPutchar (const int fd, const unsigned char c)
 {
-  write (fd, &c, 1) ;
+    write (fd, &c, 1) ;
 }
 
 
@@ -155,7 +191,7 @@ void serialPutchar (const int fd, const unsigned char c)
 
 void serialPuts (const int fd, const char *s)
 {
-  write (fd, s, strlen (s)) ;
+    write (fd, s, strlen (s)) ;
 }
 
 /*
@@ -166,14 +202,14 @@ void serialPuts (const int fd, const char *s)
 
 void serialPrintf (const int fd, const char *message, ...)
 {
-  va_list argp ;
-  char buffer [1024] ;
+    va_list argp ;
+    char buffer [1024] ;
 
-  va_start (argp, message) ;
+    va_start (argp, message) ;
     vsnprintf (buffer, 1023, message, argp) ;
-  va_end (argp) ;
+    va_end (argp) ;
 
-  serialPuts (fd, buffer) ;
+    serialPuts (fd, buffer) ;
 }
 
 
@@ -185,12 +221,12 @@ void serialPrintf (const int fd, const char *message, ...)
 
 int serialDataAvail (const int fd)
 {
-  int result ;
+    int result ;
 
-  if (ioctl (fd, FIONREAD, &result) == -1)
-    return -1 ;
+    if (ioctl (fd, FIONREAD, &result) == -1)
+        return -1 ;
 
-  return result ;
+    return result ;
 }
 
 
@@ -204,10 +240,10 @@ int serialDataAvail (const int fd)
 
 int serialGetchar (const int fd)
 {
-  uint8_t x ;
+    uint8_t x ;
 
-  if (read (fd, &x, 1) != 1)
-    return -1 ;
+    if (read (fd, &x, 1) != 1)
+        return -1 ;
 
-  return ((int)x) & 0xFF ;
+    return ((int)x) & 0xFF ;
 }

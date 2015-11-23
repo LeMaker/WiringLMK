@@ -32,7 +32,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-int outputs [2] = { 0,0 } ;
+int outputs [2] = { 0, 0 } ;
 
 #define	PIFACE_BASE	200
 #define PWM_OUT_PIN	204
@@ -41,80 +41,80 @@ int outputs [2] = { 0,0 } ;
 
 void scanButton (int button)
 {
-  if (digitalRead (PIFACE_BASE + button) == LOW)
-  {
-    outputs [button] ^= 1 ;
-    digitalWrite (PIFACE_BASE + button, outputs [button]) ;
-    printf ("Button %d pushed - output now: %s\n",
-		button, (outputs [button] == 0) ? "Off" : "On") ;
-  }
+    if (digitalRead (PIFACE_BASE + button) == LOW)
+    {
+        outputs [button] ^= 1 ;
+        digitalWrite (PIFACE_BASE + button, outputs [button]) ;
+        printf ("Button %d pushed - output now: %s\n",
+                button, (outputs [button] == 0) ? "Off" : "On") ;
+    }
 
-  while (digitalRead (PIFACE_BASE + button) == LOW)
-    delay (1) ;
+    while (digitalRead (PIFACE_BASE + button) == LOW)
+        delay (1) ;
 }
 
 
 int main (void)
 {
-  int pin, button ;
-  int pwmValue = 0 ;
+    int pin, button ;
+    int pwmValue = 0 ;
 
-  printf ("Raspberry Pi PiFace - Motor control\n") ;
-  printf ("==================================\n") ;
-  printf ("\n") ;
-  printf (
-"This program is designed to be used with a motor connected to the relays\n"
-"in an H-Bridge type configuration with optional speeed control via PWM.\n"
-"\n"
-"Use the leftmost buttons to turn each relay on and off, and the rigthmost\n"
-"buttons to increase ot decrease the PWM output on the control pin (pin\n"
-"4)\n\n") ;
+    printf ("Raspberry Pi PiFace - Motor control\n") ;
+    printf ("==================================\n") ;
+    printf ("\n") ;
+    printf (
+        "This program is designed to be used with a motor connected to the relays\n"
+        "in an H-Bridge type configuration with optional speeed control via PWM.\n"
+        "\n"
+        "Use the leftmost buttons to turn each relay on and off, and the rigthmost\n"
+        "buttons to increase ot decrease the PWM output on the control pin (pin\n"
+        "4)\n\n") ;
 
-  wiringPiSetup () ;
-  piFaceSetup (PIFACE_BASE) ;
-  softPwmCreate (PWM_OUT_PIN, 100, 100) ;
+    wiringPiSetup () ;
+    piFaceSetup (PIFACE_BASE) ;
+    softPwmCreate (PWM_OUT_PIN, 100, 100) ;
 
-// Enable internal pull-ups & start with all off
+    // Enable internal pull-ups & start with all off
 
-  for (pin = 0 ; pin < 8 ; ++pin)
-  {
-    pullUpDnControl (PIFACE_BASE + pin, PUD_UP) ;
-    digitalWrite    (PIFACE_BASE + pin, 0) ;
-  }
-
-  for (;;)
-  {
-    for (button = 0 ; button < 2 ; ++button)
-      scanButton (button) ;
-
-    if (digitalRead (PWM_UP) == LOW)
+    for (pin = 0 ; pin < 8 ; ++pin)
     {
-      pwmValue += 10 ;
-      if (pwmValue > 100)
-	pwmValue = 100 ;
-
-      softPwmWrite (PWM_OUT_PIN, pwmValue) ;
-      printf ("PWM -> %3d\n", pwmValue) ;
-
-      while (digitalRead (PWM_UP) == LOW)
-	delay (5) ;
+        pullUpDnControl (PIFACE_BASE + pin, PUD_UP) ;
+        digitalWrite    (PIFACE_BASE + pin, 0) ;
     }
 
-    if (digitalRead (PWM_DOWN) == LOW)
+    for (;;)
     {
-      pwmValue -= 10 ;
-      if (pwmValue < 0)
-	pwmValue = 0 ;
+        for (button = 0 ; button < 2 ; ++button)
+            scanButton (button) ;
 
-      softPwmWrite (PWM_OUT_PIN, pwmValue) ;
-      printf ("PWM -> %3d\n", pwmValue) ;
+        if (digitalRead (PWM_UP) == LOW)
+        {
+            pwmValue += 10 ;
+            if (pwmValue > 100)
+                pwmValue = 100 ;
 
-      while (digitalRead (PWM_DOWN) == LOW)
-	delay (5) ;
+            softPwmWrite (PWM_OUT_PIN, pwmValue) ;
+            printf ("PWM -> %3d\n", pwmValue) ;
+
+            while (digitalRead (PWM_UP) == LOW)
+                delay (5) ;
+        }
+
+        if (digitalRead (PWM_DOWN) == LOW)
+        {
+            pwmValue -= 10 ;
+            if (pwmValue < 0)
+                pwmValue = 0 ;
+
+            softPwmWrite (PWM_OUT_PIN, pwmValue) ;
+            printf ("PWM -> %3d\n", pwmValue) ;
+
+            while (digitalRead (PWM_DOWN) == LOW)
+                delay (5) ;
+        }
+
+        delay (5) ;
     }
 
-    delay (5) ;
-  }
-
-  return 0 ;
+    return 0 ;
 }

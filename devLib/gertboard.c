@@ -60,21 +60,21 @@
 
 void gertboardAnalogWrite (const int chan, const int value)
 {
-  uint8_t spiData [2] ;
-  uint8_t chanBits, dataBits ;
+    uint8_t spiData [2] ;
+    uint8_t chanBits, dataBits ;
 
-  if (chan == 0)
-    chanBits = 0x30 ;
-  else
-    chanBits = 0xB0 ;
+    if (chan == 0)
+        chanBits = 0x30 ;
+    else
+        chanBits = 0xB0 ;
 
-  chanBits |= ((value >> 4) & 0x0F) ;
-  dataBits  = ((value << 4) & 0xF0) ;
+    chanBits |= ((value >> 4) & 0x0F) ;
+    dataBits  = ((value << 4) & 0xF0) ;
 
-  spiData [0] = chanBits ;
-  spiData [1] = dataBits ;
+    spiData [0] = chanBits ;
+    spiData [1] = dataBits ;
 
-  wiringPiSPIDataRW (SPI_D2A, spiData, 2) ;
+    wiringPiSPIDataRW (SPI_D2A, spiData, 2) ;
 }
 
 
@@ -87,21 +87,21 @@ void gertboardAnalogWrite (const int chan, const int value)
 
 int gertboardAnalogRead (const int chan)
 {
-  uint8_t spiData [2] ;
+    uint8_t spiData [2] ;
 
-  uint8_t chanBits ;
+    uint8_t chanBits ;
 
-  if (chan == 0)
-    chanBits = 0b11010000 ;
-  else
-    chanBits = 0b11110000 ;
+    if (chan == 0)
+        chanBits = 0b11010000 ;
+    else
+        chanBits = 0b11110000 ;
 
-  spiData [0] = chanBits ;
-  spiData [1] = 0 ;
+    spiData [0] = chanBits ;
+    spiData [1] = 0 ;
 
-  wiringPiSPIDataRW (SPI_A2D, spiData, 2) ;
+    wiringPiSPIDataRW (SPI_A2D, spiData, 2) ;
 
-  return ((spiData [0] << 7) | (spiData [1] >> 1)) & 0x3FF ;
+    return ((spiData [0] << 7) | (spiData [1] >> 1)) & 0x3FF ;
 }
 
 
@@ -113,13 +113,13 @@ int gertboardAnalogRead (const int chan)
 
 int gertboardSPISetup (void)
 {
-  if (wiringPiSPISetup (SPI_A2D, SPI_ADC_SPEED) < 0)
-    return -1 ;
+    if (wiringPiSPISetup (SPI_A2D, SPI_ADC_SPEED) < 0)
+        return -1 ;
 
-  if (wiringPiSPISetup (SPI_D2A, SPI_DAC_SPEED) < 0)
-    return -1 ;
+    if (wiringPiSPISetup (SPI_D2A, SPI_DAC_SPEED) < 0)
+        return -1 ;
 
-  return 0 ;
+    return 0 ;
 }
 
 
@@ -130,12 +130,12 @@ int gertboardSPISetup (void)
 
 static int myAnalogRead (struct wiringPiNodeStruct *node, const int chan)
 {
-  return gertboardAnalogRead (chan - node->pinBase) ;
+    return gertboardAnalogRead (chan - node->pinBase) ;
 }
 
 static void myAnalogWrite (struct wiringPiNodeStruct *node, const int chan, const int value)
 {
-  gertboardAnalogWrite (chan - node->pinBase, value) ;
+    gertboardAnalogWrite (chan - node->pinBase, value) ;
 }
 
 
@@ -150,15 +150,15 @@ static void myAnalogWrite (struct wiringPiNodeStruct *node, const int chan, cons
 
 int gertboardAnalogSetup (const int pinBase)
 {
-  struct wiringPiNodeStruct *node ;
-  int    x ;
+    struct wiringPiNodeStruct *node ;
+    int    x ;
 
-  if (( x = gertboardSPISetup ()) != 0)
-    return  x;
+    if (( x = gertboardSPISetup ()) != 0)
+        return  x;
 
-  node = wiringPiNewNode (pinBase, 2) ;
-  node->analogRead  = myAnalogRead ;
-  node->analogWrite = myAnalogWrite ;
+    node = wiringPiNewNode (pinBase, 2) ;
+    node->analogRead  = myAnalogRead ;
+    node->analogWrite = myAnalogWrite ;
 
-  return 0 ;
+    return 0 ;
 }

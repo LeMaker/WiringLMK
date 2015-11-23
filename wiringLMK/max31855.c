@@ -39,22 +39,22 @@
 
 static int myAnalogRead (struct wiringPiNodeStruct *node, int pin)
 {
-  unsigned int spiData ;
-  int temp ;
-  int chan = pin - node->pinBase ;
+    unsigned int spiData ;
+    int temp ;
+    int chan = pin - node->pinBase ;
 
-  wiringPiSPIDataRW (node->fd, (unsigned char *)&spiData, 4) ;
+    wiringPiSPIDataRW (node->fd, (unsigned char *)&spiData, 4) ;
 
-  if (chan == 0)			// Read temp in C
-  {
-    spiData >>= 18 ;
-    temp = spiData & 0x3FFF ;		// Bottom 13 bits
-    if ((spiData & 0x2000) != 0)	// Negative
-      temp = -temp ;
-    return temp ;
-  }
-  else					// Return error bits
-    return spiData & 0x7 ;
+    if (chan == 0)			// Read temp in C
+    {
+        spiData >>= 18 ;
+        temp = spiData & 0x3FFF ;		// Bottom 13 bits
+        if ((spiData & 0x2000) != 0)	// Negative
+            temp = -temp ;
+        return temp ;
+    }
+    else					// Return error bits
+        return spiData & 0x7 ;
 }
 
 
@@ -67,15 +67,15 @@ static int myAnalogRead (struct wiringPiNodeStruct *node, int pin)
 
 int max31855Setup (const int pinBase, int spiChannel)
 {
-  struct wiringPiNodeStruct *node ;
+    struct wiringPiNodeStruct *node ;
 
-  if (wiringPiSPISetup (spiChannel, 5000000) < 0)	// 5MHz - prob 4 on the Pi
-    return -1 ;
+    if (wiringPiSPISetup (spiChannel, 5000000) < 0)	// 5MHz - prob 4 on the Pi
+        return -1 ;
 
-  node = wiringPiNewNode (pinBase, 2) ;
+    node = wiringPiNewNode (pinBase, 2) ;
 
-  node->fd         = spiChannel ;
-  node->analogRead = myAnalogRead ;
+    node->fd         = spiChannel ;
+    node->analogRead = myAnalogRead ;
 
-  return 0 ;
+    return 0 ;
 }

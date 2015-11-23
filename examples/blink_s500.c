@@ -32,24 +32,24 @@
 
 int main (void)
 {
-  printf ("Raspberry Pi blink\n") ;
+    printf ("Raspberry Pi blink\n") ;
 
-  wiringPiSetup () ;
-  pinMode (3, OUTPUT) ;
-  pinMode (5, INPUT) ;
+    wiringPiSetup () ;
+    pinMode (3, OUTPUT) ;
+    pinMode (5, INPUT) ;
 
-  for (;;)
-  {
-    digitalWrite (3, HIGH) ;	// On
-	printf(".....pin 3.........HIGH\n");
-	printf("1.....pin 5.........level = %d\n", digitalRead(5));
-    delay (6000) ;		// mS
+    for (;;)
+    {
+        digitalWrite (3, HIGH) ;	// On
+        printf(".....pin 3.........HIGH\n");
+        printf("1.....pin 5.........level = %d\n", digitalRead(5));
+        delay (6000) ;		// mS
 
-	
-    digitalWrite (3, LOW) ;	// Off
-	printf(".....pin 3.........LOW\n");
-	printf("2.....pin 5.........level = %d\n", digitalRead(5));
-    delay (6000) ;
-  }
-  return 0 ;
+
+        digitalWrite (3, LOW) ;	// Off
+        printf(".....pin 3.........LOW\n");
+        printf("2.....pin 5.........level = %d\n", digitalRead(5));
+        delay (6000) ;
+    }
+    return 0 ;
 }

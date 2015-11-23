@@ -37,33 +37,33 @@
 
 int main (void)
 {
-  int temp, rh ;
-  int newTemp, newRh ;
+    int temp, rh ;
+    int newTemp, newRh ;
 
-  temp = rh = newTemp = newRh = 0 ;
+    temp = rh = newTemp = newRh = 0 ;
 
-  wiringPiSetup () ;
-  piHiPri       (55) ;
+    wiringPiSetup () ;
+    piHiPri       (55) ;
 
-  for (;;)
-  {
-    delay (100) ;
-
-    if (!readRHT03 (RHT03_PIN, &newTemp, &newRh))
-      continue ;
-
-    if ((temp != newTemp) || (rh != newRh))
+    for (;;)
     {
-      temp = newTemp ;
-      rh   = newRh ;
-      if ((temp & 0x8000) != 0)	// Negative
-      {
-	temp &= 0x7FFF ;
-	temp = -temp ;
-      }
-      printf ("Temp: %5.1f, RH: %5.1f%%\n", temp / 10.0, rh / 10.0) ;
-    }
-  }
+        delay (100) ;
 
-  return 0 ;
+        if (!readRHT03 (RHT03_PIN, &newTemp, &newRh))
+            continue ;
+
+        if ((temp != newTemp) || (rh != newRh))
+        {
+            temp = newTemp ;
+            rh   = newRh ;
+            if ((temp & 0x8000) != 0)	// Negative
+            {
+                temp &= 0x7FFF ;
+                temp = -temp ;
+            }
+            printf ("Temp: %5.1f, RH: %5.1f%%\n", temp / 10.0, rh / 10.0) ;
+        }
+    }
+
+    return 0 ;
 }

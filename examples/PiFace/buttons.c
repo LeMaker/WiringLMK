@@ -29,7 +29,7 @@
 #include <wiringPi.h>
 #include <piFace.h>
 
-int outputs [4] = { 0,0,0,0 } ;
+int outputs [4] = { 0, 0, 0, 0 } ;
 
 // Use 200 as the pin-base for the PiFace board
 
@@ -45,16 +45,16 @@ int outputs [4] = { 0,0,0,0 } ;
 
 void scanButton (int button)
 {
-  if (digitalRead (PIFACE_BASE + button) == LOW)
-  {
-    outputs [button] ^= 1 ;
-    digitalWrite (PIFACE_BASE + button, outputs [button]) ;
-    printf ("Button %d pushed - output now: %s\n",
-		button, (outputs [button] == 0) ? "Off" : "On") ;
-  }
+    if (digitalRead (PIFACE_BASE + button) == LOW)
+    {
+        outputs [button] ^= 1 ;
+        digitalWrite (PIFACE_BASE + button, outputs [button]) ;
+        printf ("Button %d pushed - output now: %s\n",
+                button, (outputs [button] == 0) ? "Off" : "On") ;
+    }
 
-  while (digitalRead (PIFACE_BASE + button) == LOW)
-    delay (1) ;
+    while (digitalRead (PIFACE_BASE + button) == LOW)
+        delay (1) ;
 }
 
 
@@ -65,39 +65,39 @@ void scanButton (int button)
 
 int main (void)
 {
-  int pin, button ;
+    int pin, button ;
 
-  printf ("Raspberry Pi wiringPi + PiFace test program\n") ;
-  printf ("===========================================\n") ;
-  printf ("\n") ;
-  printf (
-"This program reads the buttons and uses them to toggle the first 4\n"
-"outputs. Push a button once to turn an output on, and push it again to\n"
-"turn it off again.\n\n") ;
+    printf ("Raspberry Pi wiringPi + PiFace test program\n") ;
+    printf ("===========================================\n") ;
+    printf ("\n") ;
+    printf (
+        "This program reads the buttons and uses them to toggle the first 4\n"
+        "outputs. Push a button once to turn an output on, and push it again to\n"
+        "turn it off again.\n\n") ;
 
-// Always initialise wiringPi. Use wiringPiSys() if you don't need
-//	(or want) to run as root
+    // Always initialise wiringPi. Use wiringPiSys() if you don't need
+    //	(or want) to run as root
 
-  wiringPiSetupSys () ;
+    wiringPiSetupSys () ;
 
-  piFaceSetup (PIFACE_BASE) ;
+    piFaceSetup (PIFACE_BASE) ;
 
-// Enable internal pull-ups & start with all off
+    // Enable internal pull-ups & start with all off
 
-  for (pin = 0 ; pin < 8 ; ++pin)
-  {
-    pullUpDnControl (PIFACE_BASE + pin, PUD_UP) ;
-    digitalWrite    (PIFACE_BASE + pin, 0) ;
-  }
+    for (pin = 0 ; pin < 8 ; ++pin)
+    {
+        pullUpDnControl (PIFACE_BASE + pin, PUD_UP) ;
+        digitalWrite    (PIFACE_BASE + pin, 0) ;
+    }
 
-// Loop, scanning the buttons
+    // Loop, scanning the buttons
 
-  for (;;)
-  {
-    for (button = 0 ; button < 4 ; ++button)
-      scanButton (button) ;
-    delay (5) ;
-  }
+    for (;;)
+    {
+        for (button = 0 ; button < 4 ; ++button)
+            scanButton (button) ;
+        delay (5) ;
+    }
 
-  return 0 ;
+    return 0 ;
 }
