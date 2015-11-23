@@ -2228,7 +2228,7 @@ void pullUpDnControl (int pin, int pud)
 
 
 	//add for s500
-	if(version = S500_REV)
+	if(version == S500_REV)
 	{
 		if((pin & PI_GPIO_MASK) == 0)		// On-Board Pin
 		{
@@ -3012,7 +3012,7 @@ int waitForInterrupt (int pin, int mS)
   uint8_t c ;
   struct pollfd polls ;
 
-  if(version = S500_REV)//add for S500
+  if(version == S500_REV)//add for S500
   {
       if (wiringPiMode == WPI_MODE_PINS)
       {
