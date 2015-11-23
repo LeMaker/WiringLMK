@@ -200,7 +200,7 @@ static void doLoad (int argc, char *argv [])
     args1 [0] = args2 [0] = 0 ;
 
     //add for S500
-    if(S500_REV == piBoardRev)
+    if(S500_REV == piBoardRev())
     {
         if (strcasecmp (argv [2], "spi") == 0)
         {

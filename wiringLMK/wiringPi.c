@@ -152,7 +152,6 @@ static volatile uint32_t *timerIrqRaw ;
 #define GPIO_PADS_BP		(0x00100000)
 #define CLOCK_BASE_BP		(0x00101000)
 //	addr should 4K*n
-//	#define GPIO_BASE_BP		(SUNXI_GPIO_BASE)
 #define GPIO_BASE_BP		(0x01C20000)
 #define GPIO_TIMER_BP		(0x0000B000)
 #define GPIO_PWM_BP		(0x01c20000)  //need 4k*n
