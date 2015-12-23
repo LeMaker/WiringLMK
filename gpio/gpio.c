@@ -315,7 +315,6 @@ static void doLoad (int argc, char *argv [])
 
 static void doI2Cdetect (int argc, char *argv [])
 {
-    int port = piBoardRev () == 1 ? 0 : 1 ;
     char command [128] ;
     struct stat statBuf ;
 

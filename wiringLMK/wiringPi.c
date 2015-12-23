@@ -1243,11 +1243,6 @@ int isS500(void)
 
 int piBoardRev (void)
 {
-    FILE *cpuFd ;
-    char line [120] ;
-    char *c ;
-    static int  boardRev = -1 ;
-
     //add for S500
     if(isS500())
     {
@@ -1411,7 +1406,6 @@ int physPinToPin(int physPin)
 
 void setPadDrive (int group, int value)
 {
-    uint32_t wrVal ;
 
     //add for s500
     if(version == S500_REV)
@@ -1441,7 +1435,7 @@ void setPadDrive (int group, int value)
 
 int getAlt (int pin)
 {
-    int fSel, shift, alt ;
+    int alt ;
 
     pin &= 63 ;
 
@@ -1580,7 +1574,6 @@ void pwmSetClock (int divisor)
 
 void gpioClockSet (int pin, int freq)
 {
-    int divi, divr, divf ;
 
     /* add for S500 */
     if(version == S500_REV)
@@ -1722,7 +1715,6 @@ void pinEnableED01Pi (int pin)
 
 void pinModeAlt (int pin, int mode)
 {
-    int fSel, shift ;
 
     /*add for BananaPro by LeMaker team*/
     if (BP_REV == version || S500_REV == version)
@@ -1738,7 +1730,6 @@ int s500_get_gpio_mode(int pin)
 {
     uint32_t regval = 0;
     int bank = pin >> 5;
-    int index = pin - (bank << 5);
     uint32_t *phyaddr = NULL;
 
     if ((pin & PI_GPIO_MASK) == 0)	// On-board pin
@@ -2029,8 +2020,6 @@ static void sunxi_set_gpio_mode_wrap(int pin, int mode)
 
 void pinMode (int pin, int mode)
 {
-    int    fSel, shift, alt ;
-    struct wiringPiNodeStruct *node = wiringPiNodes ;
 
     //add for S500
     if(S500_REV == version )
@@ -2481,7 +2470,6 @@ static int sunxi_digitalRead_wrap(int pin)
 
 int digitalRead (int pin)
 {
-    char c ;
 
     //add for S500
     if(S500_REV == version )
@@ -2967,8 +2955,6 @@ static int head2win[8] = {11, 12, 13, 15, 16, 18, 22, 7}; /*add for BananaPro by
 
 static void sunxi_digitalWriteByte (int value)
 {
-    uint32_t pinSet = 0 ;
-    uint32_t pinClr = 0 ;
     int mask = 1 ;
     int pin ;
 
@@ -3421,7 +3407,6 @@ int wiringPiSetup (void)
 {
     int   fd ;
     int   boardRev ;
-    int   model, rev, mem, maker, overVolted ;
 
     if (getenv (ENV_DEBUG) != NULL)
         wiringPiDebug = TRUE ;
