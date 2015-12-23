@@ -28,30 +28,30 @@
 
 int main (void)
 {
-  int i, led ;
+    int i, led ;
 
-  printf ("Raspberry Pi - 8-LED Sequencer\n") ;
-  printf ("==============================\n") ;
-  printf ("\n") ;
-  printf ("Connect LEDs to the first 8 GPIO pins and watch ...\n") ;
+    printf ("Raspberry Pi - 8-LED Sequencer\n") ;
+    printf ("==============================\n") ;
+    printf ("\n") ;
+    printf ("Connect LEDs to the first 8 GPIO pins and watch ...\n") ;
 
-  wiringPiSetup () ;
+    wiringPiSetup () ;
 
-  for (i = 0 ; i < 8 ; ++i)
-    pinMode (i, OUTPUT) ;
+    for (i = 0 ; i < 8 ; ++i)
+        pinMode (i, OUTPUT) ;
 
-  for (;;)
-  {
-    for (led = 0 ; led < 8 ; ++led)
+    for (;;)
     {
-      digitalWrite (led, 1) ;
-      delay (100) ;
-    }
+        for (led = 0 ; led < 8 ; ++led)
+        {
+            digitalWrite (led, 1) ;
+            delay (100) ;
+        }
 
-    for (led = 0 ; led < 8 ; ++led)
-    {
-      digitalWrite (led, 0) ;
-      delay (100) ;
+        for (led = 0 ; led < 8 ; ++led)
+        {
+            digitalWrite (led, 0) ;
+            delay (100) ;
+        }
     }
-  }
 }

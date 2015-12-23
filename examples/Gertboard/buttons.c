@@ -36,48 +36,48 @@ int leds [] = { 0, 0, 0 } ;
 
 void scanButton (int button)
 {
-  if (digitalRead (button) == HIGH)	// Low is pushed
-    return ;
+    if (digitalRead (button) == HIGH)	// Low is pushed
+        return ;
 
-  leds [button] ^= 1 ; // Invert state
-  digitalWrite (4 + button, leds [button]) ;
+    leds [button] ^= 1 ; // Invert state
+    digitalWrite (4 + button, leds [button]) ;
 
-  while (digitalRead (button) == LOW)	// Wait for release
-    delay (10) ;
+    while (digitalRead (button) == LOW)	// Wait for release
+        delay (10) ;
 }
 
 int main (void)
 {
-  int i ;
+    int i ;
 
-  printf ("Raspberry Pi Gertboard Button Test\n") ;
+    printf ("Raspberry Pi Gertboard Button Test\n") ;
 
-  wiringPiSetup () ;
+    wiringPiSetup () ;
 
-// Setup the outputs:
-//	Pins 3, 4, 5, 6 and 7 output:
-//	We're not using 3 or 4, but make sure they're off anyway
-//	(Using same hardware config as blink12.c)
+    // Setup the outputs:
+    //	Pins 3, 4, 5, 6 and 7 output:
+    //	We're not using 3 or 4, but make sure they're off anyway
+    //	(Using same hardware config as blink12.c)
 
-  for (i = 3 ; i < 8 ; ++i)
-  {
-    pinMode      (i, OUTPUT) ;
-    digitalWrite (i, 0) ;
-  }
+    for (i = 3 ; i < 8 ; ++i)
+    {
+        pinMode      (i, OUTPUT) ;
+        digitalWrite (i, 0) ;
+    }
 
-// Setup the inputs
+    // Setup the inputs
 
-  for (i = 0 ; i < 3 ; ++i)
-  {
-    pinMode         (i, INPUT) ;
-    pullUpDnControl (i, PUD_UP) ;
-    leds [i] = 0 ;
-  }
-
-  for (;;)
-  {
     for (i = 0 ; i < 3 ; ++i)
-      scanButton (i) ;
-    delay (1) ;
-  }
+    {
+        pinMode         (i, INPUT) ;
+        pullUpDnControl (i, PUD_UP) ;
+        leds [i] = 0 ;
+    }
+
+    for (;;)
+    {
+        for (i = 0 ; i < 3 ; ++i)
+            scanButton (i) ;
+        delay (1) ;
+    }
 }

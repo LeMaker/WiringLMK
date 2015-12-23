@@ -42,7 +42,7 @@
 
 void myDigitalWrite (struct wiringPiNodeStruct *node, int pin, int value)
 {
-  digitalWrite (pin + 16, value) ;
+    digitalWrite (pin + 16, value) ;
 }
 
 
@@ -56,10 +56,10 @@ void myDigitalWrite (struct wiringPiNodeStruct *node, int pin, int value)
 
 int myDigitalRead (struct wiringPiNodeStruct *node, int pin)
 {
-  if ((pin - node->pinBase) >= 8)
-    return digitalRead (pin + 8) ;
-  else
-    return digitalRead (pin + 16 + 8) ;
+    if ((pin - node->pinBase) >= 8)
+        return digitalRead (pin + 8) ;
+    else
+        return digitalRead (pin + 16 + 8) ;
 }
 
 
@@ -71,7 +71,7 @@ int myDigitalRead (struct wiringPiNodeStruct *node, int pin)
 
 void myPullUpDnControl (struct wiringPiNodeStruct *node, int pin, int pud)
 {
-  pullUpDnControl (pin + 16 + 8, pud) ;
+    pullUpDnControl (pin + 16 + 8, pud) ;
 }
 
 
@@ -88,25 +88,25 @@ void myPullUpDnControl (struct wiringPiNodeStruct *node, int pin, int pud)
 
 int piFaceSetup (const int pinBase)
 {
-  int    i ;
-  struct wiringPiNodeStruct *node ;
+    int    i ;
+    struct wiringPiNodeStruct *node ;
 
-// Create an mcp23s17 instance:
+    // Create an mcp23s17 instance:
 
-   mcp23s17Setup (pinBase + 16, 0, 0) ;
+    mcp23s17Setup (pinBase + 16, 0, 0) ;
 
-// Set the direction bits
+    // Set the direction bits
 
-  for (i = 0 ; i < 8 ; ++i)
-  {
-    pinMode (pinBase + 16 +     i, OUTPUT) ;	// Port A is the outputs
-    pinMode (pinBase + 16 + 8 + i, INPUT) ;	// Port B inputs.
-  }
+    for (i = 0 ; i < 8 ; ++i)
+    {
+        pinMode (pinBase + 16 +     i, OUTPUT) ;	// Port A is the outputs
+        pinMode (pinBase + 16 + 8 + i, INPUT) ;	// Port B inputs.
+    }
 
-  node = wiringPiNewNode (pinBase, 16) ;
-  node->digitalRead     = myDigitalRead ;
-  node->digitalWrite    = myDigitalWrite ;
-  node->pullUpDnControl = myPullUpDnControl ;
+    node = wiringPiNewNode (pinBase, 16) ;
+    node->digitalRead     = myDigitalRead ;
+    node->digitalWrite    = myDigitalWrite ;
+    node->pullUpDnControl = myPullUpDnControl ;
 
-  return 0 ;
+    return 0 ;
 }

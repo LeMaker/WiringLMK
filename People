@@ -31,3 +31,15 @@ Andre Crone
 
 Rik Teerling
   Pointing out some silly mistooks in the I2C code...
+
+Xiao Zhengfeng
+  Porting wiringPi for Banana Pi.
+
+Will Xiao
+  Testing on Banana Pro/Pi.
+
+Peter Chen
+  Porting wiringPi for Banana Pro.
+  
+Old Pan
+  Porting wiringPi for LeMaker Guitar

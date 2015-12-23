@@ -31,32 +31,33 @@
 
 int main (void)
 {
-  int value, pin ;
+    int value, pin ;
 
-// Enable the on-goard GPIO
+    // Enable the on-goard GPIO
 
-  wiringPiSetup () ;
+    wiringPiSetup () ;
 
-  pinMode (LED, OUTPUT) ;	// On-board LED
+    pinMode (LED, OUTPUT) ;	// On-board LED
 
-// Add in the pcf8591 on the q2w board
+    // Add in the pcf8591 on the q2w board
 
-  pcf8591Setup (Q2W_ABASE, 0x48) ;
+    pcf8591Setup (Q2W_ABASE, 0x48) ;
 
-  printf ("Raspberry Pi - Quick2Wire Voltmeter\n") ;
+    printf ("Raspberry Pi - Quick2Wire Voltmeter\n") ;
 
-  for (;;)
-  {
-    for (pin = 0 ; pin < 4 ; ++pin)
+    for (;;)
     {
-      value = analogRead  (Q2W_ABASE + pin) ;
-      printf ("  %5.2f", (double)value * 3.3 / 255.0) ;
+        for (pin = 0 ; pin < 4 ; ++pin)
+        {
+            value = analogRead  (Q2W_ABASE + pin) ;
+            printf ("  %5.2f", (double)value * 3.3 / 255.0) ;
+        }
+        printf ("\r") ;
+        fflush (stdout) ;
+
+        delay (100) ;
+        digitalWrite (LED, !digitalRead (LED)) ;	// Flicker the LED
     }
-    printf ("\r") ; fflush (stdout) ;
 
-    delay (100) ;
-    digitalWrite (LED, !digitalRead (LED)) ;	// Flicker the LED
-  }
-
-  return 0 ;
+    return 0 ;
 }

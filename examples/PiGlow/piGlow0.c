@@ -32,20 +32,20 @@
 
 int main (void)
 {
-  int i, j ;
+    int i, j ;
 
-  wiringPiSetupSys () ;
+    wiringPiSetupSys () ;
 
-  sn3218Setup (LED_BASE) ;
+    sn3218Setup (LED_BASE) ;
 
-  for (;;)
-  {
-    for (i = 0 ; i < 256 ; ++i)
-      for (j = 0 ; j < 18 ; ++j)
-	analogWrite (LED_BASE + j, i) ;
+    for (;;)
+    {
+        for (i = 0 ; i < 256 ; ++i)
+            for (j = 0 ; j < 18 ; ++j)
+                analogWrite (LED_BASE + j, i) ;
 
-    for (i = 255 ; i >= 0 ; --i)
-      for (j = 0 ; j < 18 ; ++j)
-	analogWrite (LED_BASE + j, i) ;
-  }
+        for (i = 255 ; i >= 0 ; --i)
+            for (j = 0 ; j < 18 ; ++j)
+                analogWrite (LED_BASE + j, i) ;
+    }
 }

@@ -42,14 +42,11 @@ LIBS    = -lwiringPi -lwiringPiDev -lpthread
 # May not need to  alter anything below this line
 ###############################################################################
 
-SRC	=	gpio.c readall.c pins.c
+SRC	=	gpio.c extensions.c readall.c pins.c
 
 OBJ	=	$(SRC:.c=.o)
 
 all:		gpio
-
-version.h:	../VERSION
-	$Q echo Need to run newVersion above.
 
 gpio:	$(OBJ)
 	$Q echo [Link]
@@ -98,4 +95,5 @@ depend:
 
 # DO NOT DELETE
 
-gpio.o: version.h
+gpio.o: extensions.h
+extensions.o: extensions.h

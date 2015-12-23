@@ -43,54 +43,54 @@
 
 int main (void)
 {
-  double angle ;
-  int i, inputValue ;
-  int  buffer [B_SIZE] ;
-  int   cols ;
-  struct winsize w ;
+    double angle ;
+    int i, inputValue ;
+    int  buffer [B_SIZE] ;
+    int   cols ;
+    struct winsize w ;
 
 
-  printf ("Raspberry Pi Gertboard SPI test program\n") ;
-  printf ("=======================================\n") ;
+    printf ("Raspberry Pi Gertboard SPI test program\n") ;
+    printf ("=======================================\n") ;
 
-  ioctl (fileno (stdin), TIOCGWINSZ, &w);
-  cols = w.ws_col - 2 ;
+    ioctl (fileno (stdin), TIOCGWINSZ, &w);
+    cols = w.ws_col - 2 ;
 
-// Always initialise wiringPi. Use wiringPiSys() if you don't need
-//	(or want) to run as root
+    // Always initialise wiringPi. Use wiringPiSys() if you don't need
+    //	(or want) to run as root
 
-  wiringPiSetupSys () ;
+    wiringPiSetupSys () ;
 
-// Initialise the Gertboard analog hardware at pin 100
+    // Initialise the Gertboard analog hardware at pin 100
 
-  gertboardAnalogSetup (100) ;
+    gertboardAnalogSetup (100) ;
 
-// Generate a Sine Wave and store in our buffer
+    // Generate a Sine Wave and store in our buffer
 
-  for (i = 0 ; i < B_SIZE ; ++i)
-  {
-    angle = ((double)i / (double)B_SIZE) * M_PI * 2.0 ;
-    buffer [i] = (int)rint ((sin (angle)) * 127.0 + 128.0) ;
-  }
-
-// Loop, output the sine wave on analog out port 0, read it into A-D port 0
-//	and display it on the screen
-
-  for (;;)
-  {
     for (i = 0 ; i < B_SIZE ; ++i)
     {
-      analogWrite (100, buffer [i]) ;
-
-      inputValue = analogRead (100) ;
-
-// We don't need to wory about the scale or sign - the analog hardware is
-//	a 10-bit value, so 0-1023. Just scale this to our terminal
-
-      printf ("%*s\n", (inputValue * cols) / 1023, "*") ;
-      delay (2) ;
+        angle = ((double)i / (double)B_SIZE) * M_PI * 2.0 ;
+        buffer [i] = (int)rint ((sin (angle)) * 127.0 + 128.0) ;
     }
-  }
 
-  return 0 ;
+    // Loop, output the sine wave on analog out port 0, read it into A-D port 0
+    //	and display it on the screen
+
+    for (;;)
+    {
+        for (i = 0 ; i < B_SIZE ; ++i)
+        {
+            analogWrite (100, buffer [i]) ;
+
+            inputValue = analogRead (100) ;
+
+            // We don't need to wory about the scale or sign - the analog hardware is
+            //	a 10-bit value, so 0-1023. Just scale this to our terminal
+
+            printf ("%*s\n", (inputValue * cols) / 1023, "*") ;
+            delay (2) ;
+        }
+    }
+
+    return 0 ;
 }

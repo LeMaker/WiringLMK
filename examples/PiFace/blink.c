@@ -30,30 +30,31 @@
 // Use 200 as the pin-base for the PiFace board, and pick a pin
 //	for the LED that's not connected to a relay
 
-#define	PIFACE	200
+#define	PIFACE	300
 #define	LED	(PIFACE+2)
 
 int main (int argc, char *argv [])
 {
-  printf ("Raspberry Pi PiFace Blink\n") ;
-  printf ("=========================\n") ;
+    printf ("Raspberry Pi PiFace Blink\n") ;
+    printf ("=========================\n") ;
 
-// Always initialise wiringPi. Use wiringPiSys() if you don't need
-//	(or want) to run as root
+    // Always initialise wiringPi. Use wiringPiSys() if you don't need
+    //	(or want) to run as root
 
-  wiringPiSetupSys () ;
+    // wiringPiSetupSys () ;
+    wiringPiSetup();
 
-// Setup the PiFace board
+    // Setup the PiFace board
 
-  piFaceSetup (PIFACE) ;
+    piFaceSetup (PIFACE) ;
 
-  for (;;)
-  {
-    digitalWrite (LED, HIGH) ;	// On
-    delay (500) ;		// mS
-    digitalWrite (LED, LOW) ;	// Off
-    delay (500) ;
-  }
+    for (;;)
+    {
+        digitalWrite (LED, HIGH) ;	// On
+        delay (500) ;		// mS
+        digitalWrite (LED, LOW) ;	// Off
+        delay (500) ;
+    }
 
-  return 0 ;
+    return 0 ;
 }

@@ -68,39 +68,39 @@ static volatile int globalCounter = 0 ;
 
 PI_THREAD (waitForIt)
 {
-  int state = 0 ;
-  int debounceTime = 0 ;
+    int state = 0 ;
+    int debounceTime = 0 ;
 
-  (void)piHiPri (10) ;	// Set this thread to be high priority
+    (void)piHiPri (10) ;	// Set this thread to be high priority
 
-  for (;;)
-  {
-    if (waitForInterrupt (BUTTON_PIN, -1) > 0)	// Got it
+    for (;;)
     {
-// Bouncing?
+        if (waitForInterrupt (BUTTON_PIN, -1) > 0)	// Got it
+        {
+            // Bouncing?
 
-      if (millis () < debounceTime)
-      {
-	debounceTime = millis () + DEBOUNCE_TIME ;
-	continue ;
-      }
+            if (millis () < debounceTime)
+            {
+                debounceTime = millis () + DEBOUNCE_TIME ;
+                continue ;
+            }
 
-// We have a valid one
+            // We have a valid one
 
-      state ^= 1 ;
+            state ^= 1 ;
 
-      piLock (COUNT_KEY) ;
-	++globalCounter ;
-      piUnlock (COUNT_KEY) ;
+            piLock (COUNT_KEY) ;
+            ++globalCounter ;
+            piUnlock (COUNT_KEY) ;
 
-// Wait for key to be released
+            // Wait for key to be released
 
-      while (digitalRead (BUTTON_PIN) == LOW)
-	delay (1) ;
+            while (digitalRead (BUTTON_PIN) == LOW)
+                delay (1) ;
 
-      debounceTime = millis () + DEBOUNCE_TIME ;
+            debounceTime = millis () + DEBOUNCE_TIME ;
+        }
     }
-  }
 }
 
 
@@ -113,18 +113,18 @@ PI_THREAD (waitForIt)
 void setup (void)
 {
 
-// Use the gpio program to initialise the hardware
-//	(This is the crude, but effective)
+    // Use the gpio program to initialise the hardware
+    //	(This is the crude, but effective)
 
-  system ("gpio edge 17 falling") ;
+    system ("gpio edge 17 falling") ;
 
-// Setup wiringPi
+    // Setup wiringPi
 
-  wiringPiSetupSys () ;
+    wiringPiSetupSys () ;
 
-// Fire off our interrupt handler
+    // Fire off our interrupt handler
 
-  piThreadCreate (waitForIt) ;
+    piThreadCreate (waitForIt) ;
 
 }
 
@@ -136,26 +136,27 @@ void setup (void)
 
 int main (void)
 {
-  int lastCounter = 0 ;
-  int myCounter   = 0 ;
+    int lastCounter = 0 ;
+    int myCounter   = 0 ;
 
-  setup () ;
+    setup () ;
 
-  for (;;)
-  {
-    printf ("Waiting ... ") ; fflush (stdout) ;
-
-    while (myCounter == lastCounter)
+    for (;;)
     {
-      piLock (COUNT_KEY) ;
-	myCounter = globalCounter ;
-      piUnlock (COUNT_KEY) ;
-      delay (500) ;
+        printf ("Waiting ... ") ;
+        fflush (stdout) ;
+
+        while (myCounter == lastCounter)
+        {
+            piLock (COUNT_KEY) ;
+            myCounter = globalCounter ;
+            piUnlock (COUNT_KEY) ;
+            delay (500) ;
+        }
+
+        printf (" Done. myCounter: %5d\n", myCounter) ;
+        lastCounter = myCounter ;
     }
 
-    printf (" Done. myCounter: %5d\n", myCounter) ;
-    lastCounter = myCounter ;
-  }
-
-  return 0 ;
+    return 0 ;
 }

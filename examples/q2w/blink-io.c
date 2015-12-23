@@ -32,30 +32,30 @@
 int main (void)
 {
 
-// Enable the on-goard GPIO
+    // Enable the on-goard GPIO
 
-  wiringPiSetup () ;
+    wiringPiSetup () ;
 
-// Add in the mcp23017 on the q2w board
+    // Add in the mcp23017 on the q2w board
 
-  mcp23017Setup (Q2W_BASE, 0x20) ;
+    mcp23017Setup (Q2W_BASE, 0x20) ;
 
-  printf ("Raspberry Pi - Quick2Wire MCP23017 Blink Test\n") ;
+    printf ("Raspberry Pi - Quick2Wire MCP23017 Blink Test\n") ;
 
-// Blink the on-board LED as well as one on the mcp23017
+    // Blink the on-board LED as well as one on the mcp23017
 
-  pinMode (LED, OUTPUT) ;
-  pinMode (Q2W_BASE + 0, OUTPUT) ;
+    pinMode (LED, OUTPUT) ;
+    pinMode (Q2W_BASE + 0, OUTPUT) ;
 
-  for (;;)
-  {
-    digitalWrite (LED,          HIGH) ;
-    digitalWrite (Q2W_BASE + 0, HIGH) ;
-    delay (500) ;
-    digitalWrite (LED,          LOW) ;
-    digitalWrite (Q2W_BASE + 0, LOW) ;
-    delay (500) ;
-  }
+    for (;;)
+    {
+        digitalWrite (LED,          HIGH) ;
+        digitalWrite (Q2W_BASE + 0, HIGH) ;
+        delay (500) ;
+        digitalWrite (LED,          LOW) ;
+        digitalWrite (Q2W_BASE + 0, LOW) ;
+        delay (500) ;
+    }
 
-  return 0 ;
+    return 0 ;
 }

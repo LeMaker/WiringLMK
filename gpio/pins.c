@@ -26,8 +26,8 @@
 
 void doPins (void)
 {
-  printf ("The pins command has been deprecated - sorry. Please use the\n") ;
-  printf ("  gpio readall\n") ;
-  printf ("command to get a list of the pinnouts for your Pi.\n") ;
+    printf ("The pins command has been deprecated - sorry. Please use the\n") ;
+    printf ("  gpio readall\n") ;
+    printf ("command to get a list of the pinnouts for your Pi.\n") ;
 }
 

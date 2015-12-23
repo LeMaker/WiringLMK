@@ -44,7 +44,7 @@
 
 struct nesPinsStruct
 {
-  unsigned int cPin, dPin, lPin ;
+    unsigned int cPin, dPin, lPin ;
 } ;
 
 static struct nesPinsStruct nesPins [MAX_NES_JOYSTICKS] ;
@@ -60,21 +60,21 @@ static int joysticks = 0 ;
 
 int setupNesJoystick (int dPin, int cPin, int lPin)
 {
-  if (joysticks == MAX_NES_JOYSTICKS)
-    return -1 ;
+    if (joysticks == MAX_NES_JOYSTICKS)
+        return -1 ;
 
-  nesPins [joysticks].dPin = dPin ;
-  nesPins [joysticks].cPin = cPin ;
-  nesPins [joysticks].lPin = lPin ;
+    nesPins [joysticks].dPin = dPin ;
+    nesPins [joysticks].cPin = cPin ;
+    nesPins [joysticks].lPin = lPin ;
 
-  digitalWrite (lPin, LOW) ;
-  digitalWrite (cPin, LOW) ;
+    digitalWrite (lPin, LOW) ;
+    digitalWrite (cPin, LOW) ;
 
-  pinMode (lPin, OUTPUT) ;
-  pinMode (cPin, OUTPUT) ;
-  pinMode (dPin, INPUT) ;
+    pinMode (lPin, OUTPUT) ;
+    pinMode (cPin, OUTPUT) ;
+    pinMode (dPin, INPUT) ;
 
-  return joysticks++ ;
+    return joysticks++ ;
 }
 
 
@@ -86,28 +86,32 @@ int setupNesJoystick (int dPin, int cPin, int lPin)
 
 unsigned int readNesJoystick (int joystick)
 {
-  unsigned int value = 0 ;
-  int  i ;
+    unsigned int value = 0 ;
+    int  i ;
 
-  struct nesPinsStruct *pins = &nesPins [joystick] ;
- 
-// Toggle Latch - which presents the first bit
+    struct nesPinsStruct *pins = &nesPins [joystick] ;
 
-  digitalWrite (pins->lPin, HIGH) ; delayMicroseconds (PULSE_TIME) ;
-  digitalWrite (pins->lPin, LOW)  ; delayMicroseconds (PULSE_TIME) ;
+    // Toggle Latch - which presents the first bit
 
-// Read first bit
+    digitalWrite (pins->lPin, HIGH) ;
+    delayMicroseconds (PULSE_TIME) ;
+    digitalWrite (pins->lPin, LOW)  ;
+    delayMicroseconds (PULSE_TIME) ;
 
-  value = digitalRead (pins->dPin) ;
+    // Read first bit
 
-// Now get the next 7 bits with the clock
+    value = digitalRead (pins->dPin) ;
 
-  for (i = 0 ; i < 7 ; ++i)
-  {
-    digitalWrite (pins->cPin, HIGH) ; delayMicroseconds (PULSE_TIME) ;
-    digitalWrite (pins->cPin, LOW)  ; delayMicroseconds (PULSE_TIME) ;
-    value = (value << 1) | digitalRead (pins->dPin) ;
-  }
+    // Now get the next 7 bits with the clock
 
-  return value ^ 0xFF ;
+    for (i = 0 ; i < 7 ; ++i)
+    {
+        digitalWrite (pins->cPin, HIGH) ;
+        delayMicroseconds (PULSE_TIME) ;
+        digitalWrite (pins->cPin, LOW)  ;
+        delayMicroseconds (PULSE_TIME) ;
+        value = (value << 1) | digitalRead (pins->dPin) ;
+    }
+
+    return value ^ 0xFF ;
 }

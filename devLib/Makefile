@@ -1,4 +1,3 @@
-#
 # Makefile:
 #	wiringPi device - Wiring Compatable library for the Raspberry Pi
 #
@@ -21,7 +20,10 @@
 #    along with wiringPi.  If not, see <http://www.gnu.org/licenses/>.
 #################################################################################
 
-VERSION=$(shell cat ../VERSION)
+DYN_VERS_MAJ=2
+DYN_VERS_MIN=0
+
+VERSION=$(DYN_VERS_MAJ).$(DYN_VERS_MIN)
 DESTDIR?=/usr
 PREFIX?=/local
 
@@ -66,7 +68,7 @@ $(STATIC):	$(OBJ)
 
 $(DYNAMIC):	$(OBJ)
 	$Q echo "[Link (Dynamic)]"
-	$Q $(CC) -shared -Wl,-soname,libwiringPiDev.so$(WIRINGPI_SONAME_SUFFIX) -o libwiringPiDev.so.$(VERSION) -lpthread $(OBJ)
+	$Q $(CC) -shared -Wl,-soname,libwiringPiDev.so -o libwiringPiDev.so.$(VERSION) -lpthread $(OBJ)
 
 .c.o:
 	$Q echo [Compile] $<
