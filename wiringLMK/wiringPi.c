@@ -267,7 +267,7 @@ static int s500ValidGpio [132] =
 //	and PI_VERSION_X defines in wiringPi.h
 //	Only intended for the gpio command - use at your own risk!
 
-const char *piModelNames [6] =
+const char *piModelNames [7] =
 {
     "Unknown",
     "Model A",
@@ -1828,7 +1828,7 @@ static void s500_set_gpio_mode(int pin, int mode)
 
             //LVDS信号需要先转为数字信号才能使用
 
-            if(gpio == 42 || gpio == 45 || gpio == 46 || gpio == 47 || gpio == 48 || gpio == 50 || gpio == 51)
+            if(pin == 42 || pin == 45 || pin == 46 || pin == 47 || pin == 48 || pin == 50 || pin == 51)
             {
                 //lvds port must be set digital function.The default function is LVDS ODD PAD.
                 phyaddr = gpio + (0x0044 >> 2);
@@ -1837,11 +1837,11 @@ static void s500_set_gpio_mode(int pin, int mode)
                 regval &= ~(1 << 21);
                 s500_writel(regval, phyaddr);
             }
-            else if(gpio == 64 || gpio == 65)
+            else if(pin == 64 || pin == 65)
             {
                 phyaddr = gpio + (0x0044 >> 2);
                 regval = s500_readl(phyaddr);
-                if(gpio == 64)
+                if(pin == 64)
                 {
                     regval |= (1 << 13);
                     regval |= (1 << 12);
@@ -1853,7 +1853,7 @@ static void s500_set_gpio_mode(int pin, int mode)
                 }
                 s500_writel(regval, phyaddr);
             }
-            else if(gpio == 68 || gpio == 69)
+            else if(pin == 68 || pin == 69)
             {
                 phyaddr = gpio + (0x0048 >> 2);
                 regval = s500_readl(phyaddr);
