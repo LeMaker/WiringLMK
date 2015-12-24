@@ -39,9 +39,11 @@
 static void myAnalogWrite (struct wiringPiNodeStruct *node, int pin, int value)
 {
     unsigned char b [2] ;
+	int ret = -1;
     b [0] = 0x40 ;
     b [1] = value & 0xFF ;
-    write (node->fd, b, 2) ;
+    ret  = write (node->fd, b, 2) ;
+	ret = ret;
 }
 
 

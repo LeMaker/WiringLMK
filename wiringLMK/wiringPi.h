@@ -93,7 +93,7 @@
 #define BP_REV 3  //add for BananaPro by lemaker team
 #define S500_REV 4  //add for S500
 
-extern const char *piModelNames    [6] ;
+extern const char *piModelNames    [7] ;
 extern const char *piRevisionNames [5] ;
 extern const char *piMakerNames    [5] ;
 

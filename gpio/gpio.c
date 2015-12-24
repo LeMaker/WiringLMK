@@ -191,8 +191,10 @@ static void doLoad (int argc, char *argv [])
 {
     char *module1, *module2 ;
     char cmd [80] ;
-    char *file1, *file2 ;
+    char *file1 = NULL;
+    char *file2 = NULL;
     char args1 [32], args2 [32] ;
+	int ret = -1;
 
     if (argc < 3)
         _doLoadUsage (argv) ;
@@ -201,7 +203,7 @@ static void doLoad (int argc, char *argv [])
 
     //add for S500
     if(S500_REV == piBoardRev())
-    {
+    {    	
         if (strcasecmp (argv [2], "spi") == 0)
         {
             module1 = "spidev" ;
@@ -231,15 +233,15 @@ static void doLoad (int argc, char *argv [])
         if (!moduleLoaded (module1))
         {
             sprintf (cmd, "  %s%s", module1, args1) ;
-            system (cmd) ;
+            ret = system (cmd) ;
         }
 
 
         if (!moduleLoaded (module2))
         {
             sprintf (cmd, "modprobe %s%s", module2, args2) ;
-            system (cmd) ;
-        }
+            ret = system (cmd) ;
+        }		
 
         if (!moduleLoaded (module2))
         {
@@ -279,14 +281,14 @@ static void doLoad (int argc, char *argv [])
         if (!moduleLoaded (module1))
         {
             sprintf (cmd, "  %s%s", module1, args1) ;
-            system (cmd) ;
+            ret = system (cmd) ;
         }
 
 
         if (!moduleLoaded (module2))
         {
             sprintf (cmd, "modprobe %s%s", module2, args2) ;
-            system (cmd) ;
+            ret = system (cmd) ;
         }
 
         if (!moduleLoaded (module2))
@@ -301,6 +303,8 @@ static void doLoad (int argc, char *argv [])
     }
     /*end 2014.08.19*/
     sleep (1) ;	// To let things get settled
+
+	ret = ret;
 
     changeOwner (argv [0], file1) ;
     changeOwner (argv [0], file2) ;

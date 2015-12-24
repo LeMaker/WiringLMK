@@ -580,7 +580,7 @@ void sunxi_writel(uint32_t val, uint32_t addr)
     *(gpio + mmap_seek) = val;
 }
 
-static uint32_t s500_readl(uint32_t *addr)
+static uint32_t s500_readl(volatile uint32_t *addr)
 {
     uint32_t val = 0;
 
@@ -588,7 +588,7 @@ static uint32_t s500_readl(uint32_t *addr)
     return val;
 
 }
-static void s500_writel(uint32_t val, uint32_t *addr)
+static void s500_writel(uint32_t val, volatile uint32_t *addr)
 {
     *addr = val;
 }
@@ -616,7 +616,7 @@ void sunxi_pwm_set_enable(int en)
 void s500_pwm_set_enable(int en)
 {
     uint32_t val = 0;
-    uint32_t *phyaddr = NULL;
+    volatile uint32_t *phyaddr = NULL;
 
     //Disable output
     phyaddr = gpio + (0x000C >> 2);
@@ -688,7 +688,7 @@ void sunxi_pwm_set_clk(int clk)
 void s500_pwm_set_clk_source(int select)
 {
     uint32_t regval = 0;
-    uint32_t *phyaddr = clk + (0x007C >> 2);
+    volatile uint32_t *phyaddr = clk + (0x007C >> 2);
 
     regval = s500_readl(phyaddr);
     if(select == 0)//IC_32K
@@ -717,7 +717,7 @@ void s500_pwm_set_clk(int clk_div)
 {
     uint32_t regval = 0;
     int temp;
-    uint32_t *phyaddr = clk + (0x007C >> 2);
+    volatile uint32_t *phyaddr = clk + (0x007C >> 2);
 
     regval = s500_readl(phyaddr);
     regval &= (1 << 12);
@@ -755,7 +755,7 @@ uint32_t sunxi_pwm_get_period(void)
 uint32_t s500_pwm_get_period(void)
 {
     uint32_t period = 0;
-    uint32_t *phyaddr = gpio + ((0x0050 + 4 * 3) >> 2);
+    volatile uint32_t *phyaddr = gpio + ((0x0050 + 4 * 3) >> 2);
     period = s500_readl(phyaddr);
     period &= 0x3FF;
 
@@ -783,7 +783,7 @@ uint32_t sunxi_pwm_get_act(void)
 uint32_t s500_pwm_get_act(void)
 {
     uint32_t act = 0;
-    uint32_t *phyaddr = gpio + ((0x0050 + 4 * 3) >> 2);
+    volatile uint32_t *phyaddr = gpio + ((0x0050 + 4 * 3) >> 2);
     act = s500_readl(phyaddr);
     act &= 0xFFC00;
     act >>= 10;
@@ -819,7 +819,7 @@ void sunxi_pwm_set_period(int period_cys)
 void s500_pwm_set_period(int period)
 {
     uint32_t val = 0;
-    uint32_t *phyaddr = gpio + ((0x0050 + 4 * 3) >> 2);
+    volatile uint32_t *phyaddr = gpio + ((0x0050 + 4 * 3) >> 2);
 
     period &= 0x3FF; //set max period to 2^10
     val = s500_readl(phyaddr);
@@ -855,7 +855,7 @@ void sunxi_pwm_set_act(int act_cys)
 void s500_pwm_set_act(int act)
 {
     uint32_t val = 0;
-    uint32_t *phyaddr = gpio + ((0x0050 + 4 * 3) >> 2);
+    volatile uint32_t *phyaddr = gpio + ((0x0050 + 4 * 3) >> 2);
 
     act &= 0x3FF; //set max period to 2^10
     val = s500_readl(phyaddr);
@@ -876,7 +876,7 @@ void s500_pwm_set_act(int act)
 uint32_t s500_pwm_get_polarity(void)
 {
     uint32_t val = 0;
-    uint32_t *phyaddr = gpio + ((0x0050 + 4 * 3) >> 2);
+    volatile uint32_t *phyaddr = gpio + ((0x0050 + 4 * 3) >> 2);
 
     val = s500_readl(phyaddr);
     val &= 0x100000;
@@ -899,10 +899,10 @@ uint32_t s500_pwm_get_polarity(void)
 **  0:PWM low voltage level active
 **  1:PWM high voltage level active
 */
-uint32_t s500_pwm_set_polarity(int act)
+void s500_pwm_set_polarity(int act)
 {
     uint32_t val = 0;
-    uint32_t *phyaddr = gpio + ((0x0050 + 4 * 3) >> 2);
+    volatile uint32_t *phyaddr = gpio + ((0x0050 + 4 * 3) >> 2);
 
     act &= 0x01; //range :0~1
     val = s500_readl(phyaddr);
@@ -1268,6 +1268,7 @@ int piBoardRev (void)
     {
         printf("piboardRev is error!!!\n");
     }
+	return -1;
 
 }
 
@@ -1433,6 +1434,9 @@ void setPadDrive (int group, int value)
  *********************************************************************************
  */
 
+int s500_get_gpio_mode(int pin);
+
+
 int getAlt (int pin)
 {
     int alt ;
@@ -1469,6 +1473,8 @@ int getAlt (int pin)
     {
         printf("Hardware revision is error!!!");
     }
+	
+	return -1;
 
 }
 
@@ -1541,8 +1547,6 @@ void pwmSetRange (unsigned int range)
 
 void pwmSetClock (int divisor)
 {
-    uint32_t pwm_control ;
-
     /* add for S500 */
     if(version == S500_REV)
     {
@@ -1730,7 +1734,7 @@ int s500_get_gpio_mode(int pin)
 {
     uint32_t regval = 0;
     int bank = pin >> 5;
-    uint32_t *phyaddr = NULL;
+    volatile uint32_t *phyaddr = NULL;
 
     if ((pin & PI_GPIO_MASK) == 0)	// On-board pin
     {
@@ -1787,8 +1791,10 @@ int s500_get_gpio_mode(int pin)
     else
     {
         printf("line:%dpin number error\n", __LINE__);
-        return -1;
+        
     }
+
+	return -1;
 
 }
 
@@ -1824,7 +1830,7 @@ static void s500_set_gpio_mode(int pin, int mode)
         {
             int bank = pin >> 5;
             int index = pin - (bank << 5);
-            uint32_t *phyaddr = NULL;
+            volatile uint32_t *phyaddr = NULL;
 
             //LVDS信号需要先转为数字信号才能使用
 
@@ -1876,7 +1882,7 @@ static void s500_set_gpio_mode(int pin, int mode)
                 regval = s500_readl(phyaddr);
                 if (wiringPiDebug)
                 {
-                    printf("func:%s pin:%d, MODE:%d bank:%d index:%d phyaddr:0x%x read reg val: 0x%x \n", __func__, pin , mode, bank, index, phyaddr, regval);
+                    printf("func:%s pin:%d, MODE:%d bank:%d index:%d phyaddr:0x%x read reg val: 0x%x \n", __func__, pin , mode, bank, index, (uint32_t)phyaddr, regval);
                 }
                 regval &= ~(1 << index);
                 s500_writel(regval, phyaddr);
@@ -1898,7 +1904,7 @@ static void s500_set_gpio_mode(int pin, int mode)
                 regval = s500_readl(phyaddr);
                 if (wiringPiDebug)
                 {
-                    printf("func:%s pin:%d, MODE:%d bank:%d index:%d phyaddr:0x%x read reg val: 0x%x \n", __func__, pin , mode, bank, index, phyaddr, regval);
+                    printf("func:%s pin:%d, MODE:%d bank:%d index:%d phyaddr:0x%x read reg val: 0x%x \n", __func__, pin , mode, bank, index, (uint32_t)phyaddr, regval);
                 }
                 regval |= (1 << index);
                 s500_writel(regval, phyaddr);
@@ -2055,7 +2061,7 @@ void pinMode (int pin, int mode)
 void s500_pullUpDnControl (int pin, int pud)
 {
     uint32_t regval = 0;
-    uint32_t *phyaddr = NULL;
+    volatile uint32_t *phyaddr = NULL;
 
     if(wiringPiMode == WPI_MODE_PINS)
     {
@@ -2359,7 +2365,8 @@ static int s500_digitalRead(int pin)
             }
 
             lseek  (s500_sysFds [pin], 0L, SEEK_SET) ;
-            read   (s500_sysFds [pin], &c, 1) ;
+            int ret = read   (s500_sysFds [pin], &c, 1) ;
+			ret = ret ;//为了去除编译警告 
 
             return (c == '0') ? LOW : HIGH ;
 
@@ -2373,7 +2380,7 @@ static int s500_digitalRead(int pin)
         {
             int bank = pin >> 5;
             int index = pin - (bank << 5);
-            uint32_t *phyaddr = gpio + (bank * 3) + 0x02; // +0x08 -> data reg
+            volatile uint32_t *phyaddr = gpio + (bank * 3) + 0x02; // +0x08 -> data reg
 
             regval = s500_readl(phyaddr);
             regval = regval >> index;
@@ -2433,7 +2440,8 @@ static int sunxi_digitalRead_wrap(int pin)
             if (wiringPiDebug)
                 printf ("pin %d :%d.%s,%d\n", pin , sysFds [pin], __func__, __LINE__) ;
             lseek  (sysFds [pin], 0L, SEEK_SET) ;
-            read   (sysFds [pin], &c, 1) ;
+            int ret = read   (sysFds [pin], &c, 1) ;
+			ret = ret;//为了除去编译警告
             return (c == '0') ? LOW : HIGH ;
         }
         else if (wiringPiMode == WPI_MODE_PINS)
@@ -2516,14 +2524,16 @@ static void s500_digitalWrite(int pin, int value)
 
             if (s500_sysFds [pin] != -1)
             {
+            	int ret = -1;
                 if (value == LOW)
                 {
-                    write (s500_sysFds [pin], "0\n", 2) ;
+                    ret = write (s500_sysFds [pin], "0\n", 2) ;
                 }
                 else
                 {
-                    write (s500_sysFds [pin], "1\n", 2) ;
+                    ret = write (s500_sysFds [pin], "1\n", 2) ;
                 }
+				ret = ret;//为了除去编译警告
             }
             return;
         }
@@ -2536,7 +2546,7 @@ static void s500_digitalWrite(int pin, int value)
         {
             int bank = pin >> 5;
             int index = pin - (bank << 5);
-            uint32_t *phyaddr = gpio + (bank * 3) + 0x02; // +0x08 -> data reg
+            volatile uint32_t *phyaddr = gpio + (bank * 3) + 0x02; // +0x08 -> data reg
 
             regval = s500_readl(phyaddr);
 
@@ -2566,7 +2576,7 @@ static void s500_digitalWrite(int pin, int value)
         else
         {
             printf("pin number error\n");
-            return regval;
+            return ;//regval;
         }
     }
     else
@@ -2616,12 +2626,15 @@ static void sxunxi_digitalWrite_wrap(int pin, int value)
 
             if (sysFds [pin] != -1)
             {
+            	int ret = -1;
                 if (wiringPiDebug)
                     printf ("pin %d :%d.%s,%d\n", pin , sysFds [pin], __func__, __LINE__) ;
                 if (value == LOW)
-                    write (sysFds [pin], "0\n", 2) ;
+                    ret = write (sysFds [pin], "0\n", 2) ;
                 else
-                    write (sysFds [pin], "1\n", 2) ;
+                    ret = write (sysFds [pin], "1\n", 2) ;
+
+				ret = ret;//为了除去编译警告
             }
             return ;
         }
@@ -3086,7 +3099,9 @@ int waitForInterrupt (int pin, int mS)
     // Do a dummy read to clear the interrupt
     //	A one character read appars to be enough.
 
-    (void)read (fd, &c, 1) ;
+    //(void)read (fd, &c, 1) ;
+	int ret = read (fd, &c, 1) ;
+	ret = ret;
 
     return x ;
 }
@@ -3237,10 +3252,12 @@ int wiringPiISR (int pin, int mode, void (*function)(void))
 
 
         // Clear any initial pending interrupt
-
+		int ret = -1;
         ioctl (s500_sysFds [bcmGpioPin], FIONREAD, &count) ;
         for (i = 0 ; i < count ; ++i)
-            read (s500_sysFds [bcmGpioPin], &c, 1) ;
+            ret = read (s500_sysFds [bcmGpioPin], &c, 1) ;
+
+		ret = ret;
     }
     else
     {
@@ -3253,10 +3270,12 @@ int wiringPiISR (int pin, int mode, void (*function)(void))
 
 
         // Clear any initial pending interrupt
-
+		int ret = -1;
         ioctl (sysFds [bcmGpioPin], FIONREAD, &count) ;
         for (i = 0 ; i < count ; ++i)
-            read (sysFds [bcmGpioPin], &c, 1) ;
+            ret = read (sysFds [bcmGpioPin], &c, 1) ;
+
+		ret = ret;
     }
 
     isrFunctions [pin] = function ;
@@ -3447,8 +3466,8 @@ int wiringPiSetup (void)
     if (S500_REV == boardRev)
     {
 
-#define MAP_SIZE 4096UL
-#define MAP_MASK (MAP_SIZE - 1)
+#define S500_MAP_SIZE 4096UL
+#define S500_MAP_MASK (S500_MAP_SIZE - 1)
 
         // GPIO:
         gpio = (uint32_t *)mmap(0, BLOCK_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, S500_GPIO_BASE) ;
@@ -3456,7 +3475,7 @@ int wiringPiSetup (void)
             return wiringPiFailure (WPI_ALMOST, "wiringPiSetup: mmap (GPIO) failed: %s\n", strerror (errno)) ;
 
         // PWM
-        pwm = (uint32_t *)mmap(0, BLOCK_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, S500_GPIO_PWM & ~MAP_MASK) ;
+        pwm = (uint32_t *)mmap(0, BLOCK_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, S500_GPIO_PWM & ~S500_MAP_MASK) ;
         if ((int32_t)pwm == -1)
             return wiringPiFailure (WPI_ALMOST, "wiringPiSetup: mmap (PWM) failed: %s\n", strerror (errno)) ;
 
@@ -3634,17 +3653,19 @@ int wiringPiSetupSys (void)
     if(boardRev == S500_REV)
     {
         char cmdstr[80] = {'\0'};
+		int ret = -1;
 
         for (pin = 0 ; pin < 132 ; ++pin)
         {
             if(s500ValidGpio[pin] != -1)
             {
                 snprintf(cmdstr, 80, "/usr/local/bin/gpio export %d out", pin);
-                system(cmdstr);
+                ret = system(cmdstr);
                 sprintf (fName, "/sys/class/gpio/gpio%d/value", pin) ;
                 s500_sysFds [pin] = open (fName, O_RDWR) ;
             }
         }
+		ret = ret;
     }
     else if(BP_REV == boardRev)    /*modify for BananaPro by LeMaker team*/
     {

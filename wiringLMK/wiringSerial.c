@@ -179,7 +179,9 @@ void serialClose (const int fd)
 
 void serialPutchar (const int fd, const unsigned char c)
 {
-    write (fd, &c, 1) ;
+	int ret = -1;
+    ret = write (fd, &c, 1) ;
+	ret = ret;
 }
 
 
@@ -191,7 +193,9 @@ void serialPutchar (const int fd, const unsigned char c)
 
 void serialPuts (const int fd, const char *s)
 {
-    write (fd, s, strlen (s)) ;
+	int ret = -1;
+    ret = write (fd, s, strlen (s)) ;
+	ret = ret;
 }
 
 /*
